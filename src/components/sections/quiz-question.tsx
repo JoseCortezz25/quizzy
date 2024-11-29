@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { Button } from "@/components/ui/button";
-import { Question } from '../../lib/types';
 import { QuizNavbar } from '../quiz-navbar';
+import type { QuizQuestion } from '@/actions/generate-quiz';
 
 interface QuizQuestionProps {
-  question: Question
-  questionNumber: number
-  totalQuestions: number
-  userAnswer: number | null
-  onAnswer: (answerIndex: number) => void
-  onNext: () => void
-  onSkip: () => void
+  question: QuizQuestion;
+  questionNumber: number;
+  totalQuestions: number;
+  userAnswer: number | null;
+  onAnswer: (answerIndex: number) => void;
+  onNext: () => void;
+  onSkip: () => void;
   currentQuestionIndex: number;
-  setCurrentQuestionIndex: React.Dispatch<React.SetStateAction<number>>;
-  setStep: React.Dispatch<React.SetStateAction<'quiz' | 'results'>>;
+  setCurrentQuestionIndex: Dispatch<SetStateAction<number>>;
+  setStep: Dispatch<SetStateAction<'quiz' | 'results'>>;
 }
 
 export default function QuizQuestion({
@@ -102,4 +102,3 @@ export default function QuizQuestion({
     </div>
   );
 }
-

@@ -8,28 +8,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Brain, CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
 import { Question } from '../../lib/types';
 import { Navbar } from '../navbar';
+import { GenerateQuiz, generateQuiz } from '@/actions/generate-quiz';
 
 interface QuizGeneratorProps {
-  onGenerate: (questions: Question[]) => void
+  onGenerate: (questions: GenerateQuiz) => void
 }
-
-const mockQuestions: Question[] = [
-  {
-    question: "¿Cuál es la capital de Francia?",
-    options: ["Londres", "Berlín", "París", "Madrid"],
-    correctAnswer: 2
-  },
-  {
-    question: "¿En qué año comenzó la Segunda Guerra Mundial?",
-    options: ["1939", "1940", "1941", "1942"],
-    correctAnswer: 0
-  },
-  {
-    question: "¿Quién pintó la Mona Lisa?",
-    options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Claude Monet"],
-    correctAnswer: 1
-  }
-];
 
 export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const [isGenerating, setIsGenerating] = useState(false);
@@ -38,11 +21,24 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const [difficulty, setDifficulty] = useState("medio");
 
   const handleGenerate = () => {
-    setIsGenerating(true);
-    setTimeout(() => {
-      setIsGenerating(false);
-      onGenerate(mockQuestions.slice(0, numQuestions));
-    }, 2000);
+    console.group('Quiz Generator');
+    console.log('Generating quiz...');
+    console.log('Number of questions:', numQuestions);
+    console.log('Focus:', focus);
+    console.log('Difficulty:', difficulty);
+    console.groupEnd();
+    // setIsGenerating(true);
+
+    // setTimeout(() => {
+    //   setIsGenerating(false);
+    //   onGenerate(mockQuestions.slice(0, numQuestions));
+    // }, 2000);
+    generateQuiz(numQuestions, focus, difficulty)
+      .then((questions: GenerateQuiz) => {
+        console.log('Generated questions:', questions);
+        onGenerate(questions);
+        setIsGenerating(false);
+      });
   };
 
   return (
@@ -80,9 +76,8 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="tecnico">Técnico</SelectItem>
-                    <SelectItem value="practico">Práctico</SelectItem>
-                    <SelectItem value="teorico">Teórico</SelectItem>
+                    <SelectItem value="tecnictal">Técnico</SelectItem>
+                    <SelectItem value="theoretical">Teórico</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

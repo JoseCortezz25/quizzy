@@ -6,12 +6,12 @@ import PDFUploader from '@/components/sections/pdf-uploader';
 import QuizGenerator from '@/components/sections/quiz-generator';
 import QuizQuestion from '@/components/sections/quiz-question';
 import QuizResults from '@/components/sections/quiz-results';
-import { Question } from '../lib/types';
 import QuizIntro from '@/components/sections/quiz-intro';
+import { GenerateQuiz, QuizQuestion as QuizQuestions } from '@/actions/generate-quiz';
 
 export default function QuizApp() {
   const [step, setStep] = useState<'upload' | 'generate' | 'intro' | 'quiz' | 'results'>('upload');
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<QuizQuestions[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
 
@@ -19,9 +19,11 @@ export default function QuizApp() {
     setStep('generate');
   };
 
-  const handleQuizGenerated = (generatedQuestions: Question[]) => {
-    setQuestions(generatedQuestions);
-    setUserAnswers(new Array(generatedQuestions.length).fill(null));
+  const handleQuizGenerated = (generatedQuestions: GenerateQuiz) => {
+    console.log('Generated questions:', generatedQuestions);
+
+    setQuestions(generatedQuestions.quiz.questions);
+    setUserAnswers(new Array(generatedQuestions.quiz.questions.length).fill(null));
     setStep('intro');
   };
 
@@ -79,4 +81,3 @@ export default function QuizApp() {
     </ThemeProvider>
   );
 }
-

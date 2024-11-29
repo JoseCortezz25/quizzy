@@ -1,18 +1,14 @@
 import { Check, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { Question } from '../../lib/types';
 import { QuizNavbar } from '../quiz-navbar';
+import type { QuizQuestion } from '@/actions/generate-quiz';
 
 interface QuizResultsProps {
-  questions: Question[]
+  questions: QuizQuestion[]
   userAnswers: (number | null)[]
 }
 
 export default function QuizResults({ questions, userAnswers }: QuizResultsProps) {
-  const correctAnswers = userAnswers.filter(
-    (answer, index) => answer === questions[index].correctAnswer
-  ).length;
-
   return (
     <div className="max-w-4xl mx-auto pt-4">
       {/* Header */}
@@ -29,7 +25,7 @@ export default function QuizResults({ questions, userAnswers }: QuizResultsProps
       {/* Questions list */}
       <div className="space-y-8">
         {questions.map((question, index) => {
-          const isCorrect = userAnswers[index] === question.correctAnswer;
+          const isCorrect = questions[index].options[userAnswers[index] ?? -1] === questions[index].answer;
           return (
             <div key={index} className="space-y-4">
               <div className="flex items-center gap-2">
