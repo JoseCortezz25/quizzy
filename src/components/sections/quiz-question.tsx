@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { X } from 'lucide-react';
 import { Question } from '../../lib/types';
+import { QuizNavbar } from '../quiz-navbar';
 
 interface QuizQuestionProps {
   question: Question
@@ -20,10 +20,7 @@ export default function QuizQuestion({
   question,
   questionNumber,
   totalQuestions,
-  userAnswer,
   onAnswer,
-  onNext,
-  onSkip,
   currentQuestionIndex,
   setCurrentQuestionIndex,
   setStep
@@ -53,29 +50,17 @@ export default function QuizQuestion({
   const options = ['A', 'B', 'C', 'D'];
 
   return (
-    <div className="max-w-4xl mx-auto pt-4">
+    <div className="max-w-4xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-[#00FF88]/10 flex items-center justify-center">
-            {/* <Brain className="w-4 h-4 text-[#00FF88]" /> */}
-          </div>
-          <span className="text-gray-400">Curso de Agentes AI</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <span className="text-gray-400">
-            Pregunta {questionNumber} de {totalQuestions}
-          </span>
-          <button className="text-gray-400 hover:text-white">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-      </div>
+      <QuizNavbar
+        questionNumber={questionNumber}
+        totalQuestions={totalQuestions}
+      />
 
       {/* Progress bar */}
       <div className="h-1 bg-gray-800 rounded mb-16">
         <div
-          className="h-full bg-gradient-to-r from-[#00FF88] to-[#00FF88]/50 rounded"
+          className="h-full bg-gradient-to-r from-[#00FF88] via-[#00FF88] to-[#0066FF] rounded"
           style={{ width: `${(questionNumber / totalQuestions) * 100}%` }}
         />
       </div>
@@ -107,16 +92,9 @@ export default function QuizQuestion({
       {/* Navigation */}
       <div className="flex justify-between">
         <Button
-          variant="outline"
-          onClick={onSkip}
-          className="border-gray-700 text-gray-400 hover:bg-gray-800"
-        >
-          Saltar pregunta
-        </Button>
-        <Button
           onClick={handleNextQuestion}
           disabled={selectedAnswer === null}
-          className="bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
+          className="bg-[#00FF88] text-black hover:bg-[#00FF88]/90 w-full sm:w-auto"
         >
           Comprobar
         </Button>

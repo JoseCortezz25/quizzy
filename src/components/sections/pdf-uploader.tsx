@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { FileUp, Check, Brain } from 'lucide-react';
+import { FileUp, Check, File } from 'lucide-react';
+import { Navbar } from '../navbar';
 
 interface PDFUploaderProps {
   onUpload: () => void
@@ -9,38 +10,62 @@ interface PDFUploaderProps {
 export default function PDFUploader({ onUpload }: PDFUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const handleUpload = () => {
+    const fileInput = document.getElementById('fileInput');
+    if (fileInput) {
+      fileInput.click();
+    }
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      uploadFile(file);
+      setFileName(file.name);
+    }
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const file = event.dataTransfer?.files[0];
+    if (file) {
+      uploadFile(file);
+      setFileName(file.name);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+  };
+
+  const uploadFile = (file: File | undefined) => {
     setIsUploading(true);
-    setTimeout(() => {
-      setIsUploading(false);
-      setIsUploaded(true);
+
+    if (file) {
       setTimeout(() => {
-        onUpload();
-      }, 1000);
-    }, 2000);
+        setIsUploading(false);
+        setIsUploaded(true);
+        setTimeout(() => {
+          onUpload();
+        }, 1000);
+      }, 2000);
+    }
+    // Simulate file upload
+    // setTimeout(() => {
+    //   setIsUploading(false);
+    //   setIsUploaded(true);
+    //   setTimeout(() => {
+    //     onUpload();
+    //   }, 1000);
+    // }, 2000);
   };
 
   return (
     <div className="min-h-screen bg-[#0A0E12] text-white flex flex-col">
       {/* Header */}
-      <header className="p-4 border-b border-gray-800">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Brain className="w-8 h-8 text-[#00FF88]" />
-            <span className="text-xl font-bold">AI Quiz Generator</span>
-          </div>
-          <nav>
-            <ul className="flex gap-6">
-              <li>
-                <span>
-                  Created by <a href="http://" target="_blank" rel="noopener noreferrer" className="font-bold underline">@josecortezz25</a>
-                </span>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Main content */}
       <main className="flex-grow flex items-center">
@@ -90,15 +115,34 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
                 </Button>
               </div>
             ) : (
-              <div className="space-y-4 w-full">
+              <div
+                className="space-y-4 w-full"
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+              >
                 <div
+                  id="uploadArea"
                   className="border-2 border-dashed border-gray-700 rounded-lg p-8 text-center cursor-pointer hover:border-[#00FF88]/50 transition-colors"
                   onClick={handleUpload}
                 >
-                  <p className="text-gray-400">
-                    Haz clic para seleccionar un archivo
-                  </p>
+                  {fileName ? (
+                    <div className="flex gap-4">
+                      <File className="size-10 text-[#00FF88] mb-2" />
+                      <p className="text-gray-400 text-start">{fileName}</p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-400">
+                      Haz clic para seleccionar un archivo
+                    </p>
+                  )}
                 </div>
+                <input
+                  id="fileInput"
+                  type="file"
+                  accept="application/pdf"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
                 <Button
                   onClick={handleUpload}
                   disabled={isUploading}
@@ -114,4 +158,3 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
     </div>
   );
 }
-

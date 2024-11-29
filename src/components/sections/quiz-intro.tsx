@@ -8,7 +8,7 @@ interface QuizIntroProps {
 
 export default function QuizIntro({ totalQuestions, onStart }: QuizIntroProps) {
   return (
-    <div className="max-w-2xl mx-auto mt-20">
+    <div className="max-w-2xl mx-auto pt-20">
       <div className="flex flex-col items-center mb-8">
         <div className="w-16 h-16 rounded-full bg-[#00FF88]/10 flex items-center justify-center mb-6">
           <Brain className="w-8 h-8 text-[#00FF88]" />

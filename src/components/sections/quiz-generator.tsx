@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Brain, CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
 import { Question } from '../../lib/types';
+import { Navbar } from '../navbar';
 
 interface QuizGeneratorProps {
   onGenerate: (questions: Question[]) => void
@@ -46,13 +47,8 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
 
   return (
     <div className="min-h-screen bg-[#0A0E12] text-white">
+      <Navbar />
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-2">
-            <Brain className="w-8 h-8 text-[#00FF88]" />
-            <span className="text-xl font-bold">AI Quiz Generator</span>
-          </div>
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Configuration Form */}

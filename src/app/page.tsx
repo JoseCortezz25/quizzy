@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ThemeProvider } from "next-themes";
 import PDFUploader from '@/components/sections/pdf-uploader';
 import QuizGenerator from '@/components/sections/quiz-generator';
@@ -50,7 +50,7 @@ export default function QuizApp() {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
       <div className="min-h-screen w-fill bg-[#0A0E12] text-white">
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto">
           {step === 'upload' && <PDFUploader onUpload={handlePDFUpload} />}
           {step === 'generate' && <QuizGenerator onGenerate={handleQuizGenerated} />}
           {step === 'intro' && (
