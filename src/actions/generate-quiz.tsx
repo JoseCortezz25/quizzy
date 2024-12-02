@@ -25,7 +25,7 @@ const generateSystemPrompt = ({ numberQuestions, focus, difficulty, instruction,
 };
 
 const googleModel = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_API_KEY
+  apiKey: process.env.GOOGLE_GEMINI_API
 });
 
 type GenerateQuizParams = {
@@ -63,7 +63,7 @@ export const generateQuiz = async (
   // Embeddings
   const embeddings = new GoogleGenerativeAIEmbeddings({
     model: "text-embedding-004", // 768 dimensions
-    apiKey: process.env.GOOGLE_API_KEY
+    apiKey: process.env.GOOGLE_GEMINI_API
   });
 
   // Vector Store
