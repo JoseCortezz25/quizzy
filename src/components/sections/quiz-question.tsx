@@ -4,17 +4,17 @@ import { QuizNavbar } from '../quiz-navbar';
 import type { QuizQuestion } from '@/lib/types';
 
 interface QuizQuestionProps {
+  title: string;
   question: QuizQuestion;
   questionNumber: number;
   totalQuestions: number;
   userAnswer: number | null;
   onAnswer: (answerIndex: number) => void;
   onNext: () => void;
-  onSkip: () => void;
   currentQuestionIndex: number;
   setCurrentQuestionIndex: Dispatch<SetStateAction<number>>;
-  setStep: Dispatch<SetStateAction<'quiz' | 'results'>>;
-  title: string;
+  setStep: Dispatch<SetStateAction<'upload' | 'generate' | 'intro' | 'quiz' | 'results'>>;
+  onSkip: () => void;
 }
 
 export default function QuizQuestion({
