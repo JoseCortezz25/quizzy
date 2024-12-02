@@ -7,7 +7,7 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-import { Document } from '@langchain/core/documents';
+import type { Document } from '@langchain/core/documents';
 import type { GenerateQuiz, QuizInstruction } from '@/lib/types';
 
 const generateSystemPrompt = ({ numberQuestions, focus, difficulty, instruction, docs }: QuizInstruction) => {
