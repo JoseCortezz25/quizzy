@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { ChangeEvent, DragEvent, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { FileUp, Check, File } from 'lucide-react';
 import { Navbar } from '../navbar';
+import { usePDF } from '@/store/store';
 
 interface PDFUploaderProps {
   onUpload: () => void
@@ -11,15 +12,17 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
+  const { setUploadedPDF } = usePDF();
 
   const handleUpload = () => {
     const fileInput = document.getElementById('fileInput');
+
     if (fileInput) {
       fileInput.click();
     }
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       uploadFile(file);
@@ -27,7 +30,7 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
     }
   };
 
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     const file = event.dataTransfer?.files[0];
     if (file) {
@@ -36,14 +39,14 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
     }
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
 
   const uploadFile = (file: File | undefined) => {
     setIsUploading(true);
-
     if (file) {
+      setUploadedPDF(file);
       setTimeout(() => {
         setIsUploading(false);
         setIsUploaded(true);

@@ -1,18 +1,24 @@
 import { Check, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { QuizNavbar } from '../quiz-navbar';
-import type { QuizQuestion } from '@/actions/generate-quiz';
+import type { QuizQuestion } from '@/lib/types';
 
 interface QuizResultsProps {
-  questions: QuizQuestion[]
-  userAnswers: (number | null)[]
+  questions: QuizQuestion[];
+  userAnswers: (number | null)[];
+  title: string;
 }
 
-export default function QuizResults({ questions, userAnswers }: QuizResultsProps) {
+export default function QuizResults({
+  questions,
+  userAnswers,
+  title
+}: QuizResultsProps) {
   return (
     <div className="max-w-4xl mx-auto pt-4">
       {/* Header */}
       <QuizNavbar
+        title={title}
         questionNumber={questions.length}
         totalQuestions={questions.length}
       />
@@ -20,6 +26,34 @@ export default function QuizResults({ questions, userAnswers }: QuizResultsProps
       {/* Progress bar */}
       <div className="h-1 bg-gray-800 rounded mb-8">
         <div className="h-full w-full bg-gradient-to-r from-[#00FF88] via-[#00FF88] to-[#0066FF] rounded" />
+      </div>
+
+      {/* Summary */}
+      <div className="mb-12">
+        <h1 className="text-2xl font-bold text-gray-300">
+          Resultados
+        </h1>
+        <p className="text-gray-400 mt-2">
+          Aquí puedes ver tus respuestas y los resultados del quiz.
+        </p>
+
+        <div className="flex justify-between">
+          <div className="flex flex-col items-start mt-4">
+            <span className="text-gray-300 text-[2.5rem] md:text-[4rem] font-extrabold">
+              {questions.filter((question, index) => questions[index].options[userAnswers[index] ?? -1] === questions[index].answer).length} / {questions.length}
+            </span>
+            <span className="text-gray-400">Respuestas correctas</span>
+          </div>
+
+          {/* Porcentaje de repsuestas correctas */}
+          <div className="flex flex-col items-start mt-4">
+            <span className="text-gray-300 text-[2.5rem] md:text-[4rem] font-extrabold">
+              {((questions.filter((question, index) => questions[index].options[userAnswers[index] ?? -1] === questions[index].answer).length / questions.length) * 100).toFixed(1)}%
+            </span>
+            <span className="text-gray-400">Porcentaje de respuestas correctas</span>
+          </div>
+        </div>
+
       </div>
 
       {/* Questions list */}
@@ -55,7 +89,7 @@ export default function QuizResults({ questions, userAnswers }: QuizResultsProps
       </div>
 
       {/* Footer buttons */}
-      <div className="flex justify-between mt-8 flex-col gap-4 sm:gap-0 sm:flex-row">
+      <div className="flex justify-between mt-8 flex-col gap-4 sm:gap-0 sm:flex-row pb-16">
         <Button
           variant="outline"
           className="border-gray-700 text-gray-400 hover:bg-gray-800"
@@ -69,7 +103,7 @@ export default function QuizResults({ questions, userAnswers }: QuizResultsProps
           Generar otro quiz
         </Button>
       </div>
-    </div>
+    </div >
   );
 }
 

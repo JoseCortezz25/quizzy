@@ -1,7 +1,7 @@
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import { Button } from "@/components/ui/button";
 import { QuizNavbar } from '../quiz-navbar';
-import type { QuizQuestion } from '@/actions/generate-quiz';
+import type { QuizQuestion } from '@/lib/types';
 
 interface QuizQuestionProps {
   question: QuizQuestion;
@@ -14,6 +14,7 @@ interface QuizQuestionProps {
   currentQuestionIndex: number;
   setCurrentQuestionIndex: Dispatch<SetStateAction<number>>;
   setStep: Dispatch<SetStateAction<'quiz' | 'results'>>;
+  title: string;
 }
 
 export default function QuizQuestion({
@@ -23,7 +24,8 @@ export default function QuizQuestion({
   onAnswer,
   currentQuestionIndex,
   setCurrentQuestionIndex,
-  setStep
+  setStep,
+  title
 }: QuizQuestionProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 
@@ -53,6 +55,7 @@ export default function QuizQuestion({
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <QuizNavbar
+        title={title}
         questionNumber={questionNumber}
         totalQuestions={totalQuestions}
       />
@@ -80,7 +83,7 @@ export default function QuizQuestion({
               }`}
           >
             <div className="flex items-center gap-4">
-              <span className="w-8 h-8 rounded-lg bg-[#272D36] flex items-center justify-center">
+              <span className="size- min-w-8 min-h-8 rounded-lg bg-[#272D36] flex items-center justify-center">
                 {options[index]}
               </span>
               <span>{option}</span>

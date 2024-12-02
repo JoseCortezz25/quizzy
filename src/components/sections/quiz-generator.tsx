@@ -5,10 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Brain, CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
-import { Question } from '../../lib/types';
+import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
 import { Navbar } from '../navbar';
-import { GenerateQuiz, generateQuiz } from '@/actions/generate-quiz';
+import type { GenerateQuiz } from '@/lib/types';
+import { generateQuiz } from '@/actions/generate-quiz';
+import { usePDF } from '@/store/store';
+import { Textarea } from '../ui/textarea';
+import { toast } from 'sonner';
 
 interface QuizGeneratorProps {
   onGenerate: (questions: GenerateQuiz) => void
@@ -17,28 +20,39 @@ interface QuizGeneratorProps {
 export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [numQuestions, setNumQuestions] = useState(5);
-  const [focus, setFocus] = useState("general");
+  const [focus, setFocus] = useState<"general" | "tecnictal" | "theoretical">("general");
   const [difficulty, setDifficulty] = useState("medio");
+  const [pdfContent, setPdfContent] = useState("");
+  const { uploadedPDF } = usePDF();
 
-  const handleGenerate = () => {
-    console.group('Quiz Generator');
-    console.log('Generating quiz...');
-    console.log('Number of questions:', numQuestions);
-    console.log('Focus:', focus);
-    console.log('Difficulty:', difficulty);
-    console.groupEnd();
-    // setIsGenerating(true);
+  const handleGenerate = async () => {
+    if (uploadedPDF) {
+      const formData = new FormData();
+      formData.append('file', uploadedPDF);
+      formData.append('question', pdfContent);
+      formData.append('numberQuestions', numQuestions.toString());
+      formData.append('focus', focus);
+      formData.append('difficulty', difficulty);
 
-    // setTimeout(() => {
-    //   setIsGenerating(false);
-    //   onGenerate(mockQuestions.slice(0, numQuestions));
-    // }, 2000);
-    generateQuiz(numQuestions, focus, difficulty)
-      .then((questions: GenerateQuiz) => {
-        console.log('Generated questions:', questions);
-        onGenerate(questions);
-        setIsGenerating(false);
-      });
+      setIsGenerating(true);
+      generateQuiz(formData)
+        .then((questions: GenerateQuiz | undefined) => {
+          if (questions) {
+            console.log('Generated questions:', questions);
+            onGenerate(questions);
+            setIsGenerating(false);
+            toast.success('Se ha generado el quiz correctamente');
+          } else {
+            toast.error('Error generando el quiz');
+            console.error('Failed to generate questions');
+          }
+        })
+        .catch((err) => {
+          setIsGenerating(false);
+          toast.error('Error generando el quiz');
+          console.error('Error generating quiz:', err);
+        });
+    }
   };
 
   return (
@@ -54,6 +68,18 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
               <p className="text-gray-400">Personaliza tu quiz según tus necesidades</p>
             </div>
 
+            <div className="space-y-4">
+              <Label htmlFor="pdf-content">
+                ¿Sobre qué temas quieres que se generen las preguntas?
+              </Label>
+              <Textarea
+                id="pdf-content"
+                placeholder="Escribe que temas quieres que se generen las preguntas con base en el contenido del PDF"
+                value={pdfContent}
+                onChange={(e) => setPdfContent(e.target.value)}
+                className="bg-[#272D36] text-white border-0 min-h-[100px] max-h-[210px] placeholder:text-white/60"
+              />
+            </div>
             <div className="bg-[#1A1F25] rounded-lg p-6 space-y-6">
               <div className="space-y-4">
                 <Label htmlFor="num-questions">Número de preguntas (máx. 10)</Label>
@@ -70,7 +96,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
 
               <div className="space-y-4">
                 <Label htmlFor="focus">Enfoque del quiz</Label>
-                <Select value={focus} onValueChange={setFocus}>
+                <Select value={focus} onValueChange={(value: string) => setFocus(value as "general" | "tecnictal" | "theoretical")}>
                   <SelectTrigger id="focus" className="bg-[#272D36] border-0">
                     <SelectValue placeholder="Selecciona un enfoque" />
                   </SelectTrigger>
@@ -101,7 +127,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
             <Button
               onClick={handleGenerate}
               disabled={isGenerating}
-              className="w-full bg-[#00FF88] text-black hover:bg-[#00FF88]/90 h-12 text-lg"
+              className="w-full bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
             >
               {isGenerating ? 'Generando preguntas...' : 'Generar Quiz'}
             </Button>

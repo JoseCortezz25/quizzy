@@ -7,22 +7,22 @@ import QuizGenerator from '@/components/sections/quiz-generator';
 import QuizQuestion from '@/components/sections/quiz-question';
 import QuizResults from '@/components/sections/quiz-results';
 import QuizIntro from '@/components/sections/quiz-intro';
-import { GenerateQuiz, QuizQuestion as QuizQuestions } from '@/actions/generate-quiz';
+import { GenerateQuiz, QuizQuestion as QuizQuestions } from '@/lib/types';
 
 export default function QuizApp() {
   const [step, setStep] = useState<'upload' | 'generate' | 'intro' | 'quiz' | 'results'>('upload');
   const [questions, setQuestions] = useState<QuizQuestions[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
+  const [title, setTitle] = useState<string>('');
 
   const handlePDFUpload = () => {
     setStep('generate');
   };
 
   const handleQuizGenerated = (generatedQuestions: GenerateQuiz) => {
-    console.log('Generated questions:', generatedQuestions);
-
     setQuestions(generatedQuestions.quiz.questions);
+    setTitle(generatedQuestions.title);
     setUserAnswers(new Array(generatedQuestions.quiz.questions.length).fill(null));
     setStep('intro');
   };
@@ -63,6 +63,7 @@ export default function QuizApp() {
           )}
           {step === 'quiz' && (
             <QuizQuestion
+              title={title}
               question={questions[currentQuestionIndex]}
               questionNumber={currentQuestionIndex + 1}
               totalQuestions={questions.length}
@@ -75,7 +76,13 @@ export default function QuizApp() {
               onSkip={handleSkipQuestion}
             />
           )}
-          {step === 'results' && <QuizResults questions={questions} userAnswers={userAnswers} />}
+          {step === 'results' && (
+            <QuizResults
+              title={title}
+              questions={questions}
+              userAnswers={userAnswers}
+            />
+          )}
         </div>
       </div>
     </ThemeProvider>

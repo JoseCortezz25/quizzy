@@ -1,18 +1,23 @@
 import { Brain } from 'lucide-react';
 
 interface QuizNavbarProps {
-  questionNumber: number
-  totalQuestions: number
+  questionNumber: number;
+  totalQuestions: number;
+  title: string;
 }
 
-export const QuizNavbar = ({ questionNumber, totalQuestions }: QuizNavbarProps) => {
+export const QuizNavbar = ({
+  questionNumber,
+  totalQuestions,
+  title
+}: QuizNavbarProps) => {
   return (
-    <header className="flex items-center justify-between py-6">
+    <header className="flex flex-col sm:flex-row sm:items-center gap-2 justify-between py-6">
       <div className="flex items-center gap-2">
         <div className="w-8 h-8 rounded-full bg-[#00FF88]/10 flex items-center justify-center">
-          <Brain className="w-4 h-4 text-[#00FF88]" />
+          <Brain className="size-4 min-w-4 min-h-4 text-[#00FF88]" />
         </div>
-        <span className="text-gray-400">Curso de Agentes AI</span>
+        <span className="text-gray-400">{title}</span>
       </div>
       <div className="flex items-center gap-4">
         <span className="text-gray-400">
