@@ -81,6 +81,8 @@ export const generateQuiz = async (
     return;
   }
 
+  console.log("Generating quiz with instruction:", config);
+
   //Load the PDF file
   const loader = new PDFLoader(pdfFile);
   const docs = await loader.load();
