@@ -26,3 +26,18 @@ export interface GenerateQuiz {
   quiz: Quiz;
   title: string;
 }
+
+export enum Models {
+  O1Preview = 'o1-preview',
+  O1mini = 'o1-mini',
+  GPT4o = 'gpt-4o',
+  GPT4oMini = 'gpt-4o-mini',
+  Gemini15ProLatest = 'gemini-1.5-pro-latest',
+  GeminiFlash15 = 'gemini-1.5-flash-latest',
+}
+
+export interface Options {
+  apiKey: string;
+  model: Models;
+  isFree?: boolean;
+}
