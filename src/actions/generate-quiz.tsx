@@ -57,17 +57,11 @@ const getModelEmbeddings = (config: Options) => {
 
 const getModel = (config: Options) => {
   if (config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15) {
-    console.log("Using Google model 2");
-    console.log("DATA", config);
-    console.log("DATA 2", process.env.GOOGLE_GEMINI_API);
-
     const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
     const google = createGoogleGenerativeAI({ apiKey });
     const model = google(config.model);
     return model;
   }
-
-  console.log("Using OpenAI model 2");
 
   const openai = createOpenAI({ apiKey: config.apiKey });
   const model = openai(`${config.model}`);
@@ -89,7 +83,6 @@ export const generateQuiz = async (
     return;
   }
 
-  console.log("Generating quiz with instruction:", config);
   try {
 
     //Load the PDF file
@@ -109,9 +102,6 @@ export const generateQuiz = async (
       apiKey: process.env.GOOGLE_GEMINI_API || ""
     };
 
-    console.log("Using default model:", defaultModelEmbeddings);
-
-
     // Embeddings
     const embeddings = getModelEmbeddings(config.isFree ? defaultModelEmbeddings : config);
 
@@ -121,9 +111,6 @@ export const generateQuiz = async (
       embeddings // Embeddings from the model
     );
 
-    console.log("Vector store created", inMemoryVectorStore);
-
-
     // Obtain similarity search results
     // Retrieve the documents
     const vectorStoreRetriever = inMemoryVectorStore.asRetriever({
@@ -131,16 +118,9 @@ export const generateQuiz = async (
       searchType: "similarity"
     });
 
-    console.log("Vector store retriever created", vectorStoreRetriever);
-
-
     // Get the documents
     const retrievedDocuments: Document[] = await vectorStoreRetriever.invoke(`Busca información sobre ${instruction}`);
-    console.log("Retrieved documents:", retrievedDocuments);
-
-
     const result = retrievedDocuments.map((doc) => doc.pageContent).join("\n");
-    console.log("Retrieved documents 2:", result);
 
     const defaultModel = {
       model: Models.Gemini15ProLatest,
@@ -173,8 +153,6 @@ export const generateQuiz = async (
 
     return object;
   } catch (error) {
-    console.log("----------------------");
-    console.log("Ha ocurrido un error", error);
-    console.log("----------------------");
+    throw new Error("Ha ocurrido un error generando el quiz");
   }
 };
