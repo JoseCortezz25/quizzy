@@ -38,6 +38,8 @@ type GenerateQuizParams = {
 
 const getModelEmbeddings = (config: Options) => {
   if (config.model === Models.GPT4o || config.model === Models.GPT4oMini) {
+    console.log("Using OpenAI model");
+
     const model = new OpenAIEmbeddings({
       model: "text-embedding-3-large",
       apiKey: config.apiKey
@@ -45,6 +47,9 @@ const getModelEmbeddings = (config: Options) => {
 
     return model;
   }
+
+
+  console.log("Using Google model");
 
   const model = new GoogleGenerativeAIEmbeddings({
     model: "text-embedding-004",
@@ -56,10 +61,14 @@ const getModelEmbeddings = (config: Options) => {
 
 const getModel = (config: Options) => {
   if (config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15) {
+    console.log("Using Google model 2");
+
     const google = createGoogleGenerativeAI({ apiKey: config.apiKey });
     const model = google(`models/${config.model}`);
     return model;
   }
+
+  console.log("Using OpenAI model 2");
 
   const openai = createOpenAI({ apiKey: config.apiKey });
   const model = openai(`${config.model}`);
@@ -99,8 +108,6 @@ export const generateQuiz = async (
     model: Models.Gemini15ProLatest,
     apiKey: process.env.GOOGLE_GEMINI_API || ""
   };
-
-
 
   // Embeddings
   const embeddings = getModelEmbeddings(config.isFree ? defaultModel : config);
