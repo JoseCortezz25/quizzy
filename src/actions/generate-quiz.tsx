@@ -121,6 +121,9 @@ export const generateQuiz = async (
     embeddings // Embeddings from the model
   );
 
+  console.log("Vector store created", inMemoryVectorStore);
+
+
   // Obtain similarity search results
   // Retrieve the documents
   const vectorStoreRetriever = inMemoryVectorStore.asRetriever({
@@ -128,10 +131,17 @@ export const generateQuiz = async (
     searchType: "similarity"
   });
 
+  console.log("Vector store retriever created", vectorStoreRetriever);
+
+
   // Get the documents
   const retrievedDocuments: Document[] = await vectorStoreRetriever.invoke(`Busca información sobre ${instruction}`);
+  console.log("Retrieved documents:", retrievedDocuments);
+
 
   const result = retrievedDocuments.map((doc) => doc.pageContent).join("\n");
+  console.log("Retrieved documents 2:", result);
+
 
   const { object } = await generateObject({
     model: config.isFree ? googleModel('gemini-1.5-pro') : getModel(config),
