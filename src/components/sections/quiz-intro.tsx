@@ -47,12 +47,6 @@ export default function QuizIntro({ totalQuestions, onStart }: QuizIntroProps) {
         >
           Presentar quiz
         </Button>
-        <Button
-          variant="outline"
-          className="flex-1 border-gray-700 text-gray-400 hover:bg-gray-800"
-        >
-          Saltar
-        </Button>
       </div>
     </div>
   );

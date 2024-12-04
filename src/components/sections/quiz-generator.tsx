@@ -6,8 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
-import { Navbar } from '../navbar';
-import type { GenerateQuiz } from '@/lib/types';
+import type { GenerateQuiz, Models, Options } from '@/lib/types';
 import { generateQuiz } from '@/actions/generate-quiz';
 import { usePDF } from '@/store/store';
 import { Textarea } from '../ui/textarea';
@@ -34,8 +33,17 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       formData.append('focus', focus);
       formData.append('difficulty', difficulty);
 
+      const quizCount = typeof window !== 'undefined' ? parseInt(localStorage.getItem('quizCount') || '0') : 0;
+      const invalidGenerate = quizCount >= 5 && !localStorage.getItem('apiKey');
+
+      const config: Options = {
+        apiKey: window.localStorage.getItem('apiKey') || '',
+        model: window.localStorage.getItem('model') as Models,
+        isFree: invalidGenerate
+      };
+
       setIsGenerating(true);
-      generateQuiz(formData)
+      generateQuiz(formData, config)
         .then((questions: GenerateQuiz | undefined) => {
           if (questions) {
             console.log('Generated questions:', questions);
@@ -57,7 +65,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
 
   return (
     <div className="min-h-screen bg-[#0A0E12] text-white">
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="max-w-7xl mx-auto px-4 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

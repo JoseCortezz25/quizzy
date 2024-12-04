@@ -1,21 +1,43 @@
+"use client";
+
 import { Check, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { QuizNavbar } from '../quiz-navbar';
 import type { QuizQuestion } from '@/lib/types';
+import JSConfetti from 'js-confetti';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 
 interface QuizResultsProps {
   questions: QuizQuestion[];
   userAnswers: (number | null)[];
   title: string;
+  setStep: Dispatch<SetStateAction<'upload' | 'generate' | 'intro' | 'quiz' | 'results'>>;
 }
 
 export default function QuizResults({
   questions,
   userAnswers,
-  title
+  title,
+  setStep
 }: QuizResultsProps) {
+  const percentage = ((questions.filter((question, index) => questions[index].options[userAnswers[index] ?? -1] === questions[index].answer).length / questions.length) * 100).toFixed(1);
+  const canvas = document.querySelector('#page-results') as HTMLCanvasElement;
+  const jsConfetti = new JSConfetti({ canvas });
+
+  const showConfetti = () => {
+    jsConfetti.addConfetti({
+      emojis: ['🎉', '🎊', '🎈', '🥳', '👏']
+    });
+  };
+
+  useEffect(() => {
+    if (parseFloat(percentage) >= 80) {
+      showConfetti();
+    }
+  }, []);
+
   return (
-    <div className="max-w-4xl mx-auto pt-4">
+    <div className="max-w-4xl mx-auto pt-4" id="page-results">
       {/* Header */}
       <QuizNavbar
         title={title}
@@ -39,7 +61,7 @@ export default function QuizResults({
 
         <div className="flex justify-between">
           <div className="flex flex-col items-start mt-4">
-            <span className="text-gray-300 text-[2.5rem] md:text-[4rem] font-extrabold">
+            <span className="text-gray-300 text-[2.5rem] md:text-[4rem] md:tracking-[-5px] font-extrabold">
               {questions.filter((question, index) => questions[index].options[userAnswers[index] ?? -1] === questions[index].answer).length} / {questions.length}
             </span>
             <span className="text-gray-400">Respuestas correctas</span>
@@ -48,7 +70,7 @@ export default function QuizResults({
           {/* Porcentaje de repsuestas correctas */}
           <div className="flex flex-col items-start mt-4">
             <span className="text-gray-300 text-[2.5rem] md:text-[4rem] font-extrabold">
-              {((questions.filter((question, index) => questions[index].options[userAnswers[index] ?? -1] === questions[index].answer).length / questions.length) * 100).toFixed(1)}%
+              {percentage}%
             </span>
             <span className="text-gray-400">Porcentaje de respuestas correctas</span>
           </div>
@@ -93,12 +115,13 @@ export default function QuizResults({
         <Button
           variant="outline"
           className="border-gray-700 text-gray-400 hover:bg-gray-800"
-          onClick={() => window.location.reload()}
+          onClick={() => setStep('intro')}
         >
           Repetir quiz
         </Button>
         <Button
           className="bg-white text-black hover:bg-gray-200"
+          onClick={() => setStep('generate')}
         >
           Generar otro quiz
         </Button>

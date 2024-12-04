@@ -8,7 +8,9 @@ import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import type { Document } from '@langchain/core/documents';
-import type { GenerateQuiz, QuizInstruction } from '@/lib/types';
+import { Models, type GenerateQuiz, type Options, type QuizInstruction } from '@/lib/types';
+import { OpenAIEmbeddings } from "@langchain/openai";
+import { createOpenAI } from '@ai-sdk/openai';
 
 const generateSystemPrompt = ({ numberQuestions, focus, difficulty, instruction, docs }: QuizInstruction) => {
   return `
@@ -34,8 +36,39 @@ type GenerateQuizParams = {
   difficulty: "easy" | "medium" | "hard" | "expert";
 }
 
+const getModelEmbeddings = (config: Options) => {
+  if (config.model === Models.GPT4o || config.model === Models.GPT4oMini) {
+    const model = new OpenAIEmbeddings({
+      model: "text-embedding-3-large",
+      apiKey: config.apiKey
+    });
+
+    return model;
+  }
+
+  const model = new GoogleGenerativeAIEmbeddings({
+    model: "text-embedding-004",
+    apiKey: config.apiKey
+  });
+
+  return model;
+};
+
+const getModel = (config: Options) => {
+  if (config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15) {
+    const google = createGoogleGenerativeAI({ apiKey: config.apiKey });
+    const model = google(`models/${config.model}`);
+    return model;
+  }
+
+  const openai = createOpenAI({ apiKey: config.apiKey });
+  const model = openai(`${config.model}`);
+  return model;
+};
+
 export const generateQuiz = async (
-  data: FormData
+  data: FormData,
+  config: Options
 ): Promise<GenerateQuiz | undefined> => {
   const pdfFile = data.get("file");
   const instruction = data.get("question") as string | null;
@@ -60,11 +93,13 @@ export const generateQuiz = async (
 
   const splitDocs = await textSplitter.splitDocuments(docs);
 
+  const defaultModel = {
+    model: Models.Gemini15ProLatest,
+    apiKey: process.env.GOOGLE_GEMINI_API || ""
+  };
+
   // Embeddings
-  const embeddings = new GoogleGenerativeAIEmbeddings({
-    model: "text-embedding-004", // 768 dimensions
-    apiKey: process.env.GOOGLE_GEMINI_API
-  });
+  const embeddings = getModelEmbeddings(config.isFree ? defaultModel : config);
 
   // Vector Store
   const inMemoryVectorStore = await MemoryVectorStore.fromDocuments(
@@ -85,7 +120,7 @@ export const generateQuiz = async (
   const result = retrievedDocuments.map((doc) => doc.pageContent).join("\n");
 
   const { object } = await generateObject({
-    model: googleModel('gemini-1.5-pro'),
+    model: config.isFree ? googleModel('gemini-1.5-pro') : getModel(config),
     schema: z.object({
       quiz: z.object({
         questions: z.array(z.object({
