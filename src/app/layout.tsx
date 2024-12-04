@@ -7,7 +7,8 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "AI Quiz Generator",
-  description: "Genera quizzes inteligentes con IA en segundos"
+  description: "Genera quizzes con IA en segundos",
+  metadataBase: new URL("https://quiz-generator-seven.vercel.app/")
 };
 
 export default function RootLayout({
