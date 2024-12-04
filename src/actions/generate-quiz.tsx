@@ -26,10 +26,6 @@ const generateSystemPrompt = ({ numberQuestions, focus, difficulty, instruction,
   `;
 };
 
-const googleModel = createGoogleGenerativeAI({
-  apiKey: process.env.GOOGLE_GEMINI_API
-});
-
 type GenerateQuizParams = {
   numberQuestions: number;
   focus: "general" | "tecnictal" | "theoretical";
@@ -104,16 +100,16 @@ export const generateQuiz = async (
 
   const splitDocs = await textSplitter.splitDocuments(docs);
 
-  const defaultModel = {
+  const defaultModelEmbeddings = {
     model: Models.Gemini15ProLatest,
     apiKey: process.env.GOOGLE_GEMINI_API || ""
   };
 
-  console.log("Using default model:", defaultModel);
+  console.log("Using default model:", defaultModelEmbeddings);
 
 
   // Embeddings
-  const embeddings = getModelEmbeddings(config.isFree ? defaultModel : config);
+  const embeddings = getModelEmbeddings(config.isFree ? defaultModelEmbeddings : config);
 
   // Vector Store
   const inMemoryVectorStore = await MemoryVectorStore.fromDocuments(
@@ -142,9 +138,13 @@ export const generateQuiz = async (
   const result = retrievedDocuments.map((doc) => doc.pageContent).join("\n");
   console.log("Retrieved documents 2:", result);
 
+  const defaultModel = {
+    model: Models.Gemini15ProLatest,
+    apiKey: process.env.GOOGLE_GEMINI_API || ""
+  };
 
   const { object } = await generateObject({
-    model: config.isFree ? googleModel('gemini-1.5-pro') : getModel(config),
+    model: config.isFree ? getModel(defaultModel) : getModel(config),
     schema: z.object({
       quiz: z.object({
         questions: z.array(z.object({
