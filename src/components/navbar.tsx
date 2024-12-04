@@ -14,7 +14,7 @@ export const Navbar = ({ quizCount, onOpenSettings }: NavbarProps) => {
         <nav className="flex items-center gap-2">
           <Brain className="w-8 h-8 text-[#00FF88]" />
           <span className="text-xl font-bold">AI Quiz Generator</span>
-          {!window.localStorage.getItem("apiKey") && (
+          {!globalThis.localStorage?.getItem("apiKey") && (
             <span className="ml-4 text-sm text-gray-400">
               ({quizCount}/5 quizzes generados)
             </span>
