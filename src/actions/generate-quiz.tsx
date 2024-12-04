@@ -90,82 +90,91 @@ export const generateQuiz = async (
   }
 
   console.log("Generating quiz with instruction:", config);
+  try {
 
-  //Load the PDF file
-  const loader = new PDFLoader(pdfFile);
-  const docs = await loader.load();
+    //Load the PDF file
+    const loader = new PDFLoader(pdfFile);
+    const docs = await loader.load();
 
-  // Split the documents into chunks
-  const textSplitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 2000,
-    chunkOverlap: 200
-  });
+    // Split the documents into chunks
+    const textSplitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 2000,
+      chunkOverlap: 200
+    });
 
-  const splitDocs = await textSplitter.splitDocuments(docs);
+    const splitDocs = await textSplitter.splitDocuments(docs);
 
-  const defaultModelEmbeddings = {
-    model: Models.Gemini15ProLatest,
-    apiKey: process.env.GOOGLE_GEMINI_API || ""
-  };
+    const defaultModelEmbeddings = {
+      model: Models.Gemini15ProLatest,
+      apiKey: process.env.GOOGLE_GEMINI_API || ""
+    };
 
-  console.log("Using default model:", defaultModelEmbeddings);
-
-
-  // Embeddings
-  const embeddings = getModelEmbeddings(config.isFree ? defaultModelEmbeddings : config);
-
-  // Vector Store
-  const inMemoryVectorStore = await MemoryVectorStore.fromDocuments(
-    splitDocs, // Documents to embed
-    embeddings // Embeddings from the model
-  );
-
-  console.log("Vector store created", inMemoryVectorStore);
+    console.log("Using default model:", defaultModelEmbeddings);
 
 
-  // Obtain similarity search results
-  // Retrieve the documents
-  const vectorStoreRetriever = inMemoryVectorStore.asRetriever({
-    k: 2,
-    searchType: "similarity"
-  });
+    // Embeddings
+    const embeddings = getModelEmbeddings(config.isFree ? defaultModelEmbeddings : config);
 
-  console.log("Vector store retriever created", vectorStoreRetriever);
+    // Vector Store
+    const inMemoryVectorStore = await MemoryVectorStore.fromDocuments(
+      splitDocs, // Documents to embed
+      embeddings // Embeddings from the model
+    );
 
-
-  // Get the documents
-  const retrievedDocuments: Document[] = await vectorStoreRetriever.invoke(`Busca información sobre ${instruction}`);
-  console.log("Retrieved documents:", retrievedDocuments);
+    console.log("Vector store created", inMemoryVectorStore);
 
 
-  const result = retrievedDocuments.map((doc) => doc.pageContent).join("\n");
-  console.log("Retrieved documents 2:", result);
+    // Obtain similarity search results
+    // Retrieve the documents
+    const vectorStoreRetriever = inMemoryVectorStore.asRetriever({
+      k: 2,
+      searchType: "similarity"
+    });
 
-  const defaultModel = {
-    model: Models.Gemini15ProLatest,
-    apiKey: process.env.GOOGLE_GEMINI_API || ""
-  };
+    console.log("Vector store retriever created", vectorStoreRetriever);
 
-  const { object } = await generateObject({
-    model: config.isFree ? getModel(defaultModel) : getModel(config),
-    schema: z.object({
-      quiz: z.object({
-        questions: z.array(z.object({
-          question: z.string(),
-          options: z.array(z.string()).describe('Cuatro opciones de respuesta'),
-          answer: z.string()
-        }))
+
+    // Get the documents
+    const retrievedDocuments: Document[] = await vectorStoreRetriever.invoke(`Busca información sobre ${instruction}`);
+    console.log("Retrieved documents:", retrievedDocuments);
+
+
+    const result = retrievedDocuments.map((doc) => doc.pageContent).join("\n");
+    console.log("Retrieved documents 2:", result);
+
+    const defaultModel = {
+      model: Models.Gemini15ProLatest,
+      apiKey: process.env.GOOGLE_GEMINI_API || ""
+    };
+
+    const model = config.isFree ? getModel(defaultModel) : getModel(config);
+    console.log("Model created", model);
+
+    const { object } = await generateObject({
+      model: model,
+      schema: z.object({
+        quiz: z.object({
+          questions: z.array(z.object({
+            question: z.string(),
+            options: z.array(z.string()).describe('Cuatro opciones de respuesta'),
+            answer: z.string()
+          }))
+        }),
+        title: z.string().describe('Título del quiz')
       }),
-      title: z.string().describe('Título del quiz')
-    }),
-    prompt: generateSystemPrompt({
-      numberQuestions,
-      focus,
-      difficulty,
-      instruction: instruction || "",
-      docs: result
-    })
-  });
+      prompt: generateSystemPrompt({
+        numberQuestions,
+        focus,
+        difficulty,
+        instruction: instruction || "",
+        docs: result
+      })
+    });
 
-  return object;
+    return object;
+  } catch (error) {
+    console.log("----------------------");
+    console.log("Ha ocurrido un error", error);
+    console.log("----------------------");
+  }
 };
