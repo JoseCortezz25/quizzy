@@ -59,7 +59,8 @@ const getModel = (config: Options) => {
   if (config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15) {
     console.log("Using Google model 2");
 
-    const google = createGoogleGenerativeAI({ apiKey: config.apiKey });
+    const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
+    const google = createGoogleGenerativeAI({ apiKey });
     const model = google(`models/${config.model}`);
     return model;
   }
