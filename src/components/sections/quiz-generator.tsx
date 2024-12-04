@@ -34,19 +34,18 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       formData.append('difficulty', difficulty);
 
       const quizCount = typeof window !== 'undefined' ? parseInt(localStorage.getItem('quizCount') || '0') : 0;
-      const invalidGenerate = quizCount >= 5 && !localStorage.getItem('apiKey');
+      const isFree = quizCount < 5 || !!localStorage.getItem('apiKey');
 
       const config: Options = {
         apiKey: window.localStorage.getItem('apiKey') || '',
         model: window.localStorage.getItem('model') as Models,
-        isFree: invalidGenerate
+        isFree
       };
 
       setIsGenerating(true);
       generateQuiz(formData, config)
         .then((questions: GenerateQuiz | undefined) => {
           if (questions) {
-            console.log('Generated questions:', questions);
             onGenerate(questions);
             setIsGenerating(false);
             toast.success('Se ha generado el quiz correctamente');
@@ -66,7 +65,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   return (
     <div className="min-h-screen bg-[#0A0E12] text-white">
       {/* <Navbar /> */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto sm:px-4 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left Column - Configuration Form */}

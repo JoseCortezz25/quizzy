@@ -98,6 +98,8 @@ export const generateQuiz = async (
     apiKey: process.env.GOOGLE_GEMINI_API || ""
   };
 
+
+
   // Embeddings
   const embeddings = getModelEmbeddings(config.isFree ? defaultModel : config);
 
