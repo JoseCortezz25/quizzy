@@ -58,10 +58,12 @@ const getModelEmbeddings = (config: Options) => {
 const getModel = (config: Options) => {
   if (config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15) {
     console.log("Using Google model 2");
+    console.log("DATA", config);
+    console.log("DATA 2", process.env.GOOGLE_GEMINI_API);
 
     const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
     const google = createGoogleGenerativeAI({ apiKey });
-    const model = google(`models/${config.model}`);
+    const model = google(config.model);
     return model;
   }
 
