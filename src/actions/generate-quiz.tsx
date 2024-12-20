@@ -137,7 +137,8 @@ export const generateQuiz = async (
           questions: z.array(z.object({
             question: z.string(),
             options: z.array(z.string()).describe('Cuatro opciones de respuesta'),
-            answer: z.string()
+            answer: z.string(),
+            explanation: z.string().default('').describe('Explicación de la respuesta del por qué es correcta')
           }))
         }),
         title: z.string().describe('Título del quiz')

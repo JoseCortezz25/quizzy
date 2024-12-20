@@ -7,8 +7,12 @@ import "./globals.scss";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI Quiz Generator",
+  title: "Quizzy: AI Quiz Generator",
   description: "Genera quizzes con IA en segundos",
+  authors: {
+    name: "josecortezz16",
+    url: "@josecortezz16"
+  },
   metadataBase: new URL("https://quiz-generator-seven.vercel.app/")
 };
 

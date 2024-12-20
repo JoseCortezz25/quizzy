@@ -13,7 +13,7 @@ export default function QuizIntro({ totalQuestions, onStart }: QuizIntroProps) {
         <div className="w-16 h-16 rounded-full bg-[#00FF88]/10 flex items-center justify-center mb-6">
           <Brain className="w-8 h-8 text-[#00FF88]" />
         </div>
-        <h1 className="text-3xl font-bold mb-2">Quiz de Conocimientos</h1>
+        <h1 className="text-3xl font-bold text-center mb-2">Quiz de Conocimientos</h1>
         <p className="text-gray-400 text-center">
           Prepárate, en este Quiz validarás tus conocimientos
         </p>

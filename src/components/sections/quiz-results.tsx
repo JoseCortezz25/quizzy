@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, X } from 'lucide-react';
+import { Check, Sparkles, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { QuizNavbar } from '../quiz-navbar';
 import type { QuizQuestion } from '@/lib/types';
@@ -105,6 +105,27 @@ export default function QuizResults({
                   </div>
                 )}
               </div>
+              {!isCorrect && (
+                <div className="space-y-2">
+                  <Button
+                    variant="ghost"
+                    className="hover:bg-[#1A1F25]"
+                    onClick={() => {
+                      const explanationElement = document.getElementById(`explanation-${index}`);
+                      if (explanationElement) {
+                        explanationElement.style.display = explanationElement.style.display === 'none' ? 'block' : 'none';
+                      }
+                    }}
+                  >
+                    Explicar por qué es incorrecta
+                    <Sparkles className="w-6 h-6 ml-2 text-white" />
+                  </Button>
+
+                  <div id={`explanation-${index}`} className="border border-[#1A1F25] rounded-lg p-[20px]" style={{ display: 'none' }}>
+                    {question.explanation}
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
@@ -119,6 +140,7 @@ export default function QuizResults({
         >
           Repetir quiz
         </Button>
+
         <Button
           className="bg-white text-black hover:bg-gray-200"
           onClick={() => setStep('generate')}
