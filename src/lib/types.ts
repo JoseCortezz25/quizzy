@@ -8,6 +8,7 @@ export type QuizInstruction = {
   numberQuestions: number;
   focus: "general" | "tecnictal" | "theoretical";
   difficulty: "easy" | "medium" | "hard" | "expert";
+  questionType: QuestionType;
   instruction: string;
   docs: string;
 };
@@ -15,7 +16,8 @@ export type QuizInstruction = {
 export interface QuizQuestion {
   question: string;
   options: string[];
-  answer: string;
+  type: QuestionType;
+  answer: string | string[]; 
   explanation: string;
 }
 
@@ -41,4 +43,18 @@ export interface Options {
   apiKey: string;
   model: Models;
   isFree?: boolean;
+}
+
+export enum QuestionType {
+  MultipleChoiceSingle = 'multiple-choice-single',
+  MultipleChoice = 'multiple-choice',
+  TrueOrFalse = 'true-or-false',
+  OpenEnded = 'open-ended'
+}
+
+export type UserAnswer = {
+  index: number;
+  question: string;
+  isCorrect: boolean;
+  selectedOptions: string[];
 }
