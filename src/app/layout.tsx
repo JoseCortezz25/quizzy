@@ -8,7 +8,9 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Quizzy: AI Quiz Generator",
-  description: "Genera quizzes con IA en segundos",
+  description: `Quizzy utiliza inteligencia artificial para crear preguntas adecuadas para pruebas, exámenes o práctica general. 
+  Esta herramienta puede transformar tu contenido en un quiz completo en segundos. 
+  Simplemente sube tu material y deja que el generador de preguntas produzca una herramienta de evaluación personalizada.`,
   authors: {
     name: "josecortezz16",
     url: "@josecortezz16"

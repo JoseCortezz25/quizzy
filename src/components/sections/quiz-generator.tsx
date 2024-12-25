@@ -1,16 +1,16 @@
 'use client';
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
-import type { GenerateQuiz, Models, Options } from '@/lib/types';
+import { GenerateQuiz, Models, Options, QuestionType } from '@/lib/types';
 import { generateQuiz } from '@/actions/generate-quiz';
 import { usePDF } from '@/store/store';
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
+import { dictionaryQuestionType } from '@/lib/utils';
 
 interface QuizGeneratorProps {
   onGenerate: (questions: GenerateQuiz) => void
@@ -21,6 +21,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const [numQuestions, setNumQuestions] = useState(5);
   const [focus, setFocus] = useState<"general" | "tecnictal" | "theoretical">("general");
   const [difficulty, setDifficulty] = useState("medio");
+  const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MultipleChoiceSingle);
   const [pdfContent, setPdfContent] = useState("");
   const { uploadedPDF } = usePDF();
 
@@ -32,6 +33,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       formData.append('numberQuestions', numQuestions.toString());
       formData.append('focus', focus);
       formData.append('difficulty', difficulty);
+      formData.append('questionType', questionType);
 
       const quizCount = typeof window !== 'undefined' ? parseInt(localStorage.getItem('quizCount') || '0') : 0;
       const isFree = quizCount < 5 || !!localStorage.getItem('apiKey');
@@ -93,7 +95,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                 <Input
                   id="num-questions"
                   type="number"
-                  min={1}
+                  min={3}
                   max={10}
                   value={numQuestions}
                   onChange={(e) => setNumQuestions(Math.min(10, Math.max(1, parseInt(e.target.value) || 1)))}
@@ -102,8 +104,34 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
               </div>
 
               <div className="space-y-4">
+                <Label htmlFor="question-type">Tipo de pregunta</Label>
+                <Select
+                  value={questionType}
+                  onValueChange={(value: string) => setQuestionType(value as QuestionType)}
+                >
+                  <SelectTrigger id="question-type" className="bg-[#272D36] border-0">
+                    <SelectValue placeholder="Selecciona el tipo de pregunta" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={QuestionType.MultipleChoiceSingle}>
+                      Opción multiple con una sola respuesta
+                    </SelectItem>
+                    <SelectItem value={QuestionType.MultipleChoice}>
+                      Opción multiple con múltiples respuestas
+                    </SelectItem>
+                    <SelectItem value={QuestionType.TrueOrFalse}>
+                      Verdadero o Falso
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-4">
                 <Label htmlFor="focus">Enfoque del quiz</Label>
-                <Select value={focus} onValueChange={(value: string) => setFocus(value as "general" | "tecnictal" | "theoretical")}>
+                <Select
+                  value={focus}
+                  onValueChange={(value: string) => setFocus(value as "general" | "tecnictal" | "theoretical")
+                  }>
                   <SelectTrigger id="focus" className="bg-[#272D36] border-0">
                     <SelectValue placeholder="Selecciona un enfoque" />
                   </SelectTrigger>
@@ -184,6 +212,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                     <li>Número de preguntas: {numQuestions}</li>
                     <li>Enfoque: {focus}</li>
                     <li>Dificultad: {difficulty}</li>
+                    <li>Tipo de pregunta: {dictionaryQuestionType(questionType)}</li>
                   </ul>
                   <p className="text-sm text-gray-400">
                     Basado en esta configuración, la IA generará un quiz personalizado

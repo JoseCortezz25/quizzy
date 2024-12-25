@@ -1,5 +1,4 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { ThemeProvider } from "next-themes";
 import PDFUploader from '@/components/sections/pdf-uploader';
@@ -7,7 +6,7 @@ import QuizGenerator from '@/components/sections/quiz-generator';
 import QuizQuestion from '@/components/sections/quiz-question';
 import QuizResults from '@/components/sections/quiz-results';
 import QuizIntro from '@/components/sections/quiz-intro';
-import { GenerateQuiz, QuizQuestion as QuizQuestions } from '@/lib/types';
+import { GenerateQuiz, QuizQuestion as QuizQuestions, UserAnswer } from '@/lib/types';
 import { WelcomeModal } from '@/components/modals/welcome-modal';
 import { Navbar } from '@/components/navbar';
 import { ErrorModal } from '@/components/modals/error-modal';
@@ -16,7 +15,7 @@ export default function QuizApp() {
   const [step, setStep] = useState<'upload' | 'generate' | 'intro' | 'quiz' | 'results'>('upload');
   const [questions, setQuestions] = useState<QuizQuestions[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<(number | null)[]>([]);
+  const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
   const [title, setTitle] = useState<string>('');
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [quizCount, setQuizCount] = useState(0);
@@ -46,7 +45,12 @@ export default function QuizApp() {
 
     setQuestions(generatedQuestions.quiz.questions);
     setTitle(generatedQuestions.title);
-    setUserAnswers(new Array(generatedQuestions.quiz.questions.length).fill(null));
+    setUserAnswers(generatedQuestions.quiz.questions.map((question, index) => ({
+      index: index,
+      question: question.question,
+      selectedOptions: [],
+      isCorrect: false
+    })));
     setStep('intro');
 
     const newCount = quizCount + 1;
@@ -55,15 +59,16 @@ export default function QuizApp() {
   };
 
   const handleStartQuiz = () => {
-    setCurrentQuestionIndex(0); // Reset current question index
-    setUserAnswers(new Array(questions.length).fill(null)); // Reset user answers
+    setCurrentQuestionIndex(0);
     setStep('quiz');
   };
 
-  const handleAnswer = (answerIndex: number) => {
+  const handleQuestionAnswer = (isCorrect: number, selectedOptions: string[]) => {
     const newUserAnswers = [...userAnswers];
-    newUserAnswers[currentQuestionIndex] = answerIndex;
-    setUserAnswers(newUserAnswers);
+
+    const currentQuestion = newUserAnswers[currentQuestionIndex];
+    currentQuestion.isCorrect = !!isCorrect;
+    currentQuestion.selectedOptions = selectedOptions;
   };
 
   const handleNextQuestion = () => {
@@ -78,14 +83,10 @@ export default function QuizApp() {
     handleNextQuestion();
   };
 
-  const handleOpenSettings = () => {
-    // Implement settings modal logic here
-  };
-
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
       <div className="min-h-screen w-full bg-[#0A0E12] text-white">
-        <Navbar quizCount={quizCount} onOpenSettings={handleOpenSettings} />
+        <Navbar quizCount={quizCount} />
         <WelcomeModal
           open={showWelcomeModal}
           onOpenChange={setShowWelcomeModal}
@@ -112,8 +113,7 @@ export default function QuizApp() {
               question={questions[currentQuestionIndex]}
               questionNumber={currentQuestionIndex + 1}
               totalQuestions={questions.length}
-              userAnswer={userAnswers[currentQuestionIndex]}
-              onAnswer={handleAnswer}
+              onAnswer={handleQuestionAnswer}
               onNext={handleNextQuestion}
               currentQuestionIndex={currentQuestionIndex}
               setCurrentQuestionIndex={setCurrentQuestionIndex}

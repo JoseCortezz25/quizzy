@@ -4,11 +4,10 @@ import { Button } from "../ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 
 interface SheetSettingsProps {
-  onOpenSettings: () => void;
   [key: string]: unknown;
 }
 
-const SheetSettings = ({ onOpenSettings, ...props }: SheetSettingsProps) => {
+const SheetSettings = ({ ...props }: SheetSettingsProps) => {
   return (
     <Sheet {...props}>
       <SheetTrigger>
@@ -16,7 +15,6 @@ const SheetSettings = ({ onOpenSettings, ...props }: SheetSettingsProps) => {
           asChild
           variant="ghost"
           size="icon"
-          onClick={onOpenSettings}
           className="dark:hover:bg-[#20352F] p-2"
         >
           <SettingsIcon className="size-8" />

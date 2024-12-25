@@ -1,21 +1,26 @@
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import { useState, Dispatch, SetStateAction, useMemo } from 'react';
 import { Button } from "@/components/ui/button";
 import { QuizNavbar } from '../quiz-navbar';
-import type { QuizQuestion } from '@/lib/types';
+import { QuestionType, type QuizQuestion } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 interface QuizQuestionProps {
   title: string;
   question: QuizQuestion;
   questionNumber: number;
   totalQuestions: number;
-  userAnswer: number | null;
-  onAnswer: (answerIndex: number) => void;
+  onAnswer: (answerIndex: number, selectedOptions: string[]) => void;
   onNext: () => void;
   currentQuestionIndex: number;
   setCurrentQuestionIndex: Dispatch<SetStateAction<number>>;
   setStep: Dispatch<SetStateAction<'upload' | 'generate' | 'intro' | 'quiz' | 'results'>>;
   onSkip: () => void;
 }
+
+type SelectedOptions = {
+  index: number;
+  option: string;
+};
 
 export default function QuizQuestion({
   question,
@@ -27,25 +32,47 @@ export default function QuizQuestion({
   setStep,
   title
 }: QuizQuestionProps) {
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<SelectedOptions[]>([]);
 
-  useEffect(() => {
-    setSelectedAnswer(null);
-  }, [question]);
+  const isButtonEnabled = useMemo(() => {
+    return selectedOptions.length === question.answer.length;
+  }, [selectedOptions.length, question.answer.length]);
 
-  const handleSelectAnswer = (index: number) => {
-    setSelectedAnswer(index);
+  const handleSelectAnswer = (index: number, option: string) => {
+    if (question.type === QuestionType.MultipleChoice) {
+      setSelectedOptions(prev => {
+        const newSet = new Set(prev);
+        const existingOption = Array.from(newSet).find(item => item.index === index);
+
+        if (existingOption) {
+          newSet.delete(existingOption);
+          return Array.from(newSet);
+        }
+
+        newSet.add({ index, option });
+        return Array.from(newSet);
+      });
+      return;
+    }
+
+    // Single choice
+    setSelectedOptions([{ index, option }]);
   };
 
   const handleNextQuestion = () => {
-    if (selectedAnswer !== null) {
-      onAnswer(selectedAnswer);
-      if (currentQuestionIndex < totalQuestions - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setSelectedAnswer(null);
-      } else {
-        setStep('results');
-      }
+    const isCorrect = selectedOptions.every((option) => {
+      return question.answer.includes(option.option);
+    });
+
+    const selectedOptionsText = selectedOptions.map((option) => option.option);
+
+    // 1 for correct, 0 for incorrect
+    onAnswer(isCorrect ? 1 : 0, selectedOptionsText);
+    if (currentQuestionIndex < totalQuestions - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setSelectedOptions([]);
+    } else {
+      setStep('results');
     }
   };
 
@@ -63,27 +90,28 @@ export default function QuizQuestion({
       {/* Progress bar */}
       <div className="h-1 bg-gray-800 rounded mb-16">
         <div
-          className="h-full bg-gradient-to-r from-[#00FF88] via-[#00FF88] to-[#0066FF] rounded"
+          className="quiz-progressbar"
           style={{ width: `${(questionNumber / totalQuestions) * 100}%` }}
         />
       </div>
 
       {/* Question */}
-      <h2 className="text-3xl font-bold mb-12">{question.question}</h2>
+      <h2 className="question-item__title">{question.question}</h2>
 
       {/* Options */}
       <div className="space-y-4 mb-8">
         {question.options.map((option, index) => (
           <button
             key={index}
-            onClick={() => handleSelectAnswer(index)}
-            className={`w-full text-left p-4 rounded-lg transition-colors ${selectedAnswer === index
-              ? 'bg-[#00FF88]/20 border-2 border-[#00FF88]'
-              : 'bg-[#1A1F25] border-2 border-transparent hover:border-[#00FF88]/50'
-              }`}
+            onClick={() => handleSelectAnswer(index, option)}
+            className={cn(
+              "question-item",
+              selectedOptions.find((item) => item.index === index)
+                ? "question-item__selected" : "question-item__default"
+            )}
           >
             <div className="flex items-center gap-4">
-              <span className="size- min-w-8 min-h-8 rounded-lg bg-[#272D36] flex items-center justify-center">
+              <span className="question-item__index">
                 {options[index]}
               </span>
               <span>{option}</span>
@@ -96,8 +124,8 @@ export default function QuizQuestion({
       <div className="flex justify-between">
         <Button
           onClick={handleNextQuestion}
-          disabled={selectedAnswer === null}
-          className="bg-[#00FF88] text-black hover:bg-[#00FF88]/90 w-full sm:w-auto"
+          disabled={!isButtonEnabled}
+          className="btn-question"
         >
           Comprobar
         </Button>

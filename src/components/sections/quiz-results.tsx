@@ -1,15 +1,15 @@
 "use client";
-
 import { Check, Sparkles, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { QuizNavbar } from '../quiz-navbar';
-import type { QuizQuestion } from '@/lib/types';
+import { QuestionType, type QuizQuestion, type UserAnswer } from '@/lib/types';
 import JSConfetti from 'js-confetti';
 import { Dispatch, SetStateAction, useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 interface QuizResultsProps {
   questions: QuizQuestion[];
-  userAnswers: (number | null)[];
+  userAnswers: UserAnswer[];
   title: string;
   setStep: Dispatch<SetStateAction<'upload' | 'generate' | 'intro' | 'quiz' | 'results'>>;
 }
@@ -20,7 +20,12 @@ export default function QuizResults({
   title,
   setStep
 }: QuizResultsProps) {
-  const percentage = ((questions.filter((question, index) => questions[index].options[userAnswers[index] ?? -1] === questions[index].answer).length / questions.length) * 100).toFixed(1);
+  const checkAnswer = (userAnswer: UserAnswer) => {
+    return userAnswer.isCorrect;
+  };
+
+  const rightAnswers = userAnswers.filter((answer) => answer.isCorrect).length;
+  const percentage = ((rightAnswers / questions.length) * 100).toFixed(1);
   const canvas = document.querySelector('#page-results') as HTMLCanvasElement;
   const jsConfetti = new JSConfetti({ canvas });
 
@@ -28,6 +33,16 @@ export default function QuizResults({
     jsConfetti.addConfetti({
       emojis: ['🎉', '🎊', '🎈', '🥳', '👏']
     });
+  };
+
+  const shareOnTwitter = () => {
+    const url = 'https://twitter.com/intent/tweet';
+    const text = `¡He obtenido un ${percentage} porciento en el quiz "${title}"! 🎉🎉🎉 \n\n
+    He tenido ${rightAnswers} respuestas correctas de ${questions.length} preguntas.\n\n`;
+    const hashtags = 'quizzy';
+    const via = 'josecortezz16';
+    const twitterUrl = `${url}?text=${text}&hashtags=${hashtags}&via=${via}`;
+    window.open(twitterUrl, '_blank');
   };
 
   useEffect(() => {
@@ -47,7 +62,7 @@ export default function QuizResults({
 
       {/* Progress bar */}
       <div className="h-1 bg-gray-800 rounded mb-8">
-        <div className="h-full w-full bg-gradient-to-r from-[#00FF88] via-[#00FF88] to-[#0066FF] rounded" />
+        <div className="quiz-progressbar " />
       </div>
 
       {/* Summary */}
@@ -62,12 +77,11 @@ export default function QuizResults({
         <div className="flex justify-between">
           <div className="flex flex-col items-start mt-4">
             <span className="text-gray-300 text-[2.5rem] md:text-[4rem] md:tracking-[-5px] font-extrabold">
-              {questions.filter((question, index) => questions[index].options[userAnswers[index] ?? -1] === questions[index].answer).length} / {questions.length}
+              {rightAnswers} / {questions.length}
             </span>
             <span className="text-gray-400">Respuestas correctas</span>
           </div>
 
-          {/* Porcentaje de repsuestas correctas */}
           <div className="flex flex-col items-start mt-4">
             <span className="text-gray-300 text-[2.5rem] md:text-[4rem] font-extrabold">
               {percentage}%
@@ -81,7 +95,9 @@ export default function QuizResults({
       {/* Questions list */}
       <div className="space-y-8">
         {questions.map((question, index) => {
-          const isCorrect = questions[index].options[userAnswers[index] ?? -1] === questions[index].answer;
+          const isCorrect = checkAnswer(userAnswers[index]);
+          const selectedOptions = userAnswers[index].selectedOptions;
+
           return (
             <div key={index} className="space-y-4">
               <div className="flex items-center gap-2">
@@ -89,11 +105,19 @@ export default function QuizResults({
                 <h2 className="text-gray-300">{question.question}</h2>
               </div>
               <div className="flex items-center justify-between">
-                <div className={`flex-1 p-4 rounded-lg ${isCorrect ? 'bg-[#1A1F25] border border-[#00FF88]/30' : 'bg-[#1A1F25] border border-red-500/30'
-                  }`}>
-                  <p className="text-gray-300">
-                    {question.options[userAnswers[index] ?? 0]}
-                  </p>
+                <div className={cn(
+                  "result-item",
+                  isCorrect ? 'result-item__correct' : 'result-item__wrong'
+                )}>
+                  {question.type !== QuestionType.OpenEnded && (
+                    <div className="space-y-2">
+                      {selectedOptions.map(option => (
+                        <p className="text-gray-300" key={option}>
+                          {option}
+                        </p>
+                      ))}
+                    </div>
+                  )}
                 </div>
                 {isCorrect ? (
                   <div className="ml-4">
@@ -133,13 +157,22 @@ export default function QuizResults({
 
       {/* Footer buttons */}
       <div className="flex justify-between mt-8 flex-col gap-4 sm:gap-0 sm:flex-row pb-16">
-        <Button
-          variant="outline"
-          className="border-gray-700 text-gray-400 hover:bg-gray-800"
-          onClick={() => setStep('intro')}
-        >
-          Repetir quiz
-        </Button>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button
+            variant="outline"
+            className="border-gray-700 text-gray-400 hover:bg-gray-800"
+            onClick={() => setStep('intro')}
+          >
+            Repetir quiz
+          </Button>
+          <Button
+            variant="outline"
+            className="border-gray-700 text-gray-400 hover:bg-gray-800"
+            onClick={shareOnTwitter}
+          >
+            Compartir mis resultados en X
+          </Button>
+        </div>
 
         <Button
           className="bg-white text-black hover:bg-gray-200"
