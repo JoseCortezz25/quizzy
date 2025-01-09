@@ -11,6 +11,7 @@ import { Models, QuestionType, type GenerateQuiz, type Options, type QuizInstruc
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { createOpenAI } from '@ai-sdk/openai';
 import { dictionaryQuestionType } from '@/lib/utils';
+import { AISDKExporter } from 'langsmith/vercel';
 
 const generateSystemPrompt = ({
   numberQuestions,
@@ -161,7 +162,9 @@ export const generateQuiz = async (
         instruction: instruction || "",
         docs: result,
         questionType
-      })
+      }),
+      // eslint-disable-next-line camelcase
+      experimental_telemetry: AISDKExporter.getSettings()
     });
 
     const updatedQuiz = {
