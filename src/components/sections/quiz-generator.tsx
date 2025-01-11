@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
@@ -10,7 +10,7 @@ import { generateQuiz } from '@/actions/generate-quiz';
 import { usePDF } from '@/store/store';
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
-import { dictionaryQuestionType } from '@/lib/utils';
+import { dictionaryQuestionType, cn } from '@/lib/utils';
 
 interface QuizGeneratorProps {
   onGenerate: (questions: GenerateQuiz) => void
@@ -23,9 +23,21 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const [difficulty, setDifficulty] = useState("medio");
   const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MultipleChoiceSingle);
   const [pdfContent, setPdfContent] = useState("");
-  const { uploadedPDF } = usePDF();
+  const { uploadedPDF, typeFile } = usePDF();
+  const [pdfContentError, setPdfContentError] = useState("");
+
+  const validatePdfContent = () => {
+    if (!pdfContent.trim()) {
+      setPdfContentError("Por favor, especifica los temas para generar las preguntas");
+      return false;
+    }
+    setPdfContentError("");
+    return true;
+  };
 
   const handleGenerate = async () => {
+    if (!validatePdfContent()) return;
+
     if (uploadedPDF) {
       const formData = new FormData();
       formData.append('file', uploadedPDF);
@@ -66,7 +78,6 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
 
   return (
     <div className="min-h-screen bg-[#0A0E12] text-white">
-      {/* <Navbar /> */}
       <div className="max-w-7xl mx-auto sm:px-4 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -85,22 +96,38 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                 id="pdf-content"
                 placeholder="Escribe que temas quieres que se generen las preguntas con base en el contenido del PDF"
                 value={pdfContent}
-                onChange={(e) => setPdfContent(e.target.value)}
-                className="bg-[#272D36] text-white border-0 min-h-[100px] max-h-[210px] placeholder:text-white/60"
+                onChange={(e) => {
+                  setPdfContent(e.target.value);
+                  if (pdfContentError) setPdfContentError("");
+                }}
+                className={cn(
+                  "bg-[#272D36] text-white border-0 min-h-[100px] max-h-[210px] placeholder:text-white/60",
+                  pdfContentError && "border-2 border-red-500"
+                )}
               />
+              {pdfContentError && (
+                <p className="text-sm text-red-500">{pdfContentError}</p>
+              )}
             </div>
             <div className="bg-[#1A1F25] rounded-lg p-6 space-y-6">
               <div className="space-y-4">
-                <Label htmlFor="num-questions">Número de preguntas (máx. 10)</Label>
-                <Input
-                  id="num-questions"
-                  type="number"
-                  min={3}
-                  max={10}
-                  value={numQuestions}
-                  onChange={(e) => setNumQuestions(Math.min(10, Math.max(1, parseInt(e.target.value) || 1)))}
-                  className="bg-[#272D36] border-0"
-                />
+                <Label>Número de preguntas</Label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[3, 5, 10, 15].map((num) => (
+                    <div
+                      key={num}
+                      className={cn(
+                        "cursor-pointer rounded-lg p-4 text-center transition-colors font-bold",
+                        numQuestions === num
+                          ? "bg-[#00FF88] text-black"
+                          : "bg-[#272D36] hover:bg-[#272D36]/80"
+                      )}
+                      onClick={() => setNumQuestions(num)}
+                    >
+                      {num}
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-4">
@@ -171,6 +198,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
           {/* Right Column - Preview and Features */}
           <div className="lg:pl-8">
             <div className="bg-[#1A1F25] rounded-lg p-8">
+              {typeFile}
               <div className="flex items-center gap-3 mb-6">
                 <Sparkles className="w-6 h-6 text-[#00FF88]" />
                 <h2 className="text-xl font-bold">Quiz Personalizado con IA</h2>
