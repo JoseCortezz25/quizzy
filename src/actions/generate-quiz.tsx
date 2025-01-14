@@ -140,7 +140,6 @@ export const generateQuiz = async (
     };
 
     const model = config.isFree ? getModel(defaultModel) : getModel(config);
-    console.log("Model created", model);
 
     const { object } = await generateObject({
       model: model,
