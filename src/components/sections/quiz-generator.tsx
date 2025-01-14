@@ -214,7 +214,6 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
           {/* Right Column - Preview and Features */}
           <div className="lg:pl-8">
             <div className="bg-[#1A1F25] rounded-lg p-8">
-              {typeFile}
               <div className="flex items-center gap-3 mb-6">
                 <Sparkles className="w-6 h-6 text-[#00FF88]" />
                 <h2 className="text-xl font-bold">Quiz Personalizado con IA</h2>

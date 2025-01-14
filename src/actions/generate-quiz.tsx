@@ -221,6 +221,14 @@ export const generateQuizBasedImage = async (
   const difficulty = data.get("difficulty") as GenerateQuizParams["difficulty"];
   const questionType = data.get("questionType") as GenerateQuizParams["questionType"];
 
+  console.log("--------------------");
+  console.log("Instruction", instruction);
+  console.log("Number of questions", numberQuestions);
+  console.log("Focus", focus);
+  console.log("Difficulty", difficulty);
+  console.log("Question type", questionType);
+  console.log("--------------------");
+
   const defaultModel = {
     model: Models.Gemini15ProLatest,
     apiKey: process.env.GOOGLE_GEMINI_API || ""
@@ -283,6 +291,8 @@ export const generateQuizBasedImage = async (
 
     return { quiz: updatedQuiz, title: object.title };
   } catch (error) {
+    console.log("Error in actions", error);
+
     throw new Error("Ha ocurrido un error generando el quiz");
   }
 };
