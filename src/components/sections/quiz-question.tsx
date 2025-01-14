@@ -77,7 +77,7 @@ export default function QuizQuestion({
   const options = ['A', 'B', 'C', 'D'];
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto mb-14 sm:mb-0">
       {/* Header */}
       <QuizNavbar
         title={title}

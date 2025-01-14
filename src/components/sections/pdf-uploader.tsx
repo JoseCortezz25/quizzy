@@ -199,13 +199,13 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
               </TabsList>
               <TabsContent value={FileType.PDF}>
                 <section className="w-full">
-                  <div className="flex gap-4 mt-5">
+                  <div className="flex gap-4 mt-5 flex-col items-center sm:items-start sm:flex-row">
                     <div className="min-w-20 min-h-20 w-20 h-20 rounded-full bg-[#00FF88]/10 flex items-center justify-center mb-6">
                       <FileUp className="w-10 h-10 text-[#00FF88]" />
                     </div>
-                    <div className="flex flex-col items-start">
+                    <div className="flex flex-col items-center sm:items-start">
                       <h2 className="text-2xl font-bold">Sube tu PDF</h2>
-                      <p className="text-gray-400 mb-6 text-balance">
+                      <p className="text-gray-400 mb-6 text-balance text-center sm:text-start">
                         Arrastra y suelta tu archivo PDF aquí, o haz clic para seleccionar.
                       </p>
                     </div>
@@ -218,13 +218,13 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
               </TabsContent>
               <TabsContent value={FileType.IMAGE}>
                 <section className="w-full">
-                  <div className="flex gap-4 mt-5">
+                  <div className="flex gap-4 mt-5 flex-col items-center sm:items-start sm:flex-row">
                     <div className="min-w-20 min-h-20 w-20 h-20 rounded-full bg-[#00FF88]/10 flex items-center justify-center mb-6">
                       <ImagePlusIcon className="w-10 h-10 text-[#00FF88]" />
                     </div>
-                    <div className="flex flex-col items-start">
+                    <div className="flex flex-col items-center sm:items-start">
                       <h2 className="text-2xl font-bold">Sube tu Imagen</h2>
-                      <p className="text-gray-400 mb-6">
+                      <p className="text-gray-400 mb-6 text-center sm:text-start">
                         Arrastra y suelta tu imagen aquí, o haz clic para seleccionar.
                       </p>
                     </div>
