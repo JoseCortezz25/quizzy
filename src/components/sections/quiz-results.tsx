@@ -52,7 +52,7 @@ export default function QuizResults({
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto pt-4" id="page-results">
+    <div className="max-w-4xl mx-auto pt-4 mb-14 sm:mb-0" id="page-results">
       {/* Header */}
       <QuizNavbar
         title={title}

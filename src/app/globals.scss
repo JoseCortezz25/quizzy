@@ -131,3 +131,20 @@
 .result-item__wrong {
   @apply bg-[#1A1F25] border border-red-500/30;
 }
+
+.file-tabs {
+  @apply flex flex-col items-center;
+
+  &__list {
+    @apply bg-[#0A0E12] rounded-full flex gap-2;
+
+    button {
+      @apply rounded-full;
+    }
+
+    button[data-state="active"] {
+      // @apply bg-[#1A1F25];
+      @apply bg-[#00FF88] text-[#1A1F25] font-bold;
+    }
+  }
+}

@@ -1,16 +1,15 @@
 'use client';
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
 import { GenerateQuiz, Models, Options, QuestionType } from '@/lib/types';
-import { generateQuiz } from '@/actions/generate-quiz';
-import { usePDF } from '@/store/store';
+import { generateQuiz, generateQuizBasedImage } from '@/actions/generate-quiz';
+import { FileType, usePDF } from '@/store/store';
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
-import { dictionaryQuestionType } from '@/lib/utils';
+import { dictionaryQuestionType, cn } from '@/lib/utils';
 
 interface QuizGeneratorProps {
   onGenerate: (questions: GenerateQuiz) => void
@@ -23,12 +22,47 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const [difficulty, setDifficulty] = useState("medio");
   const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MultipleChoiceSingle);
   const [pdfContent, setPdfContent] = useState("");
-  const { uploadedPDF } = usePDF();
+  const { uploadedPDF, typeFile } = usePDF();
+  const [pdfContentError, setPdfContentError] = useState("");
+
+  const validatePdfContent = () => {
+    if (!pdfContent.trim()) {
+      setPdfContentError("Por favor, especifica los temas para generar las preguntas");
+      return false;
+    }
+    setPdfContentError("");
+    return true;
+  };
+
+  const handleQuizGeneration = (generateFunction: Promise<GenerateQuiz | undefined>) => {
+    generateFunction
+      .then((questions: GenerateQuiz | undefined) => {
+        if (questions) {
+          onGenerate(questions);
+          toast.success('Se ha generado el quiz correctamente');
+        } else {
+          toast.error('Error generando el quiz');
+          console.error('Failed to generate questions');
+        }
+      })
+      .catch((err) => {
+        toast.error('Error generando el quiz');
+        console.error('Error generating quiz:', err);
+      })
+      .finally(() => {
+        setIsGenerating(false);
+      });
+  };
 
   const handleGenerate = async () => {
+    if (!validatePdfContent()) return;
+
     if (uploadedPDF) {
       const formData = new FormData();
-      formData.append('file', uploadedPDF);
+
+      if (typeFile === FileType.PDF) {
+        formData.append('file', uploadedPDF);
+      }
       formData.append('question', pdfContent);
       formData.append('numberQuestions', numQuestions.toString());
       formData.append('focus', focus);
@@ -45,28 +79,21 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       };
 
       setIsGenerating(true);
-      generateQuiz(formData, config)
-        .then((questions: GenerateQuiz | undefined) => {
-          if (questions) {
-            onGenerate(questions);
-            setIsGenerating(false);
-            toast.success('Se ha generado el quiz correctamente');
-          } else {
-            toast.error('Error generando el quiz');
-            console.error('Failed to generate questions');
-          }
-        })
-        .catch((err) => {
-          setIsGenerating(false);
-          toast.error('Error generando el quiz');
-          console.error('Error generating quiz:', err);
-        });
+
+      if (typeFile === FileType.IMAGE) {
+        const reader = new FileReader();
+        reader.readAsDataURL(uploadedPDF as Blob);
+        reader.onload = function () {
+          handleQuizGeneration(generateQuizBasedImage(formData, reader.result as string, config));
+        };
+      } else {
+        handleQuizGeneration(generateQuiz(formData, config));
+      }
     }
   };
 
   return (
     <div className="min-h-screen bg-[#0A0E12] text-white">
-      {/* <Navbar /> */}
       <div className="max-w-7xl mx-auto sm:px-4 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -85,22 +112,38 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                 id="pdf-content"
                 placeholder="Escribe que temas quieres que se generen las preguntas con base en el contenido del PDF"
                 value={pdfContent}
-                onChange={(e) => setPdfContent(e.target.value)}
-                className="bg-[#272D36] text-white border-0 min-h-[100px] max-h-[210px] placeholder:text-white/60"
+                onChange={(e) => {
+                  setPdfContent(e.target.value);
+                  if (pdfContentError) setPdfContentError("");
+                }}
+                className={cn(
+                  "bg-[#272D36] text-white border-0 min-h-[100px] max-h-[210px] placeholder:text-white/60",
+                  pdfContentError && "border-2 border-red-500"
+                )}
               />
+              {pdfContentError && (
+                <p className="text-sm text-red-500">{pdfContentError}</p>
+              )}
             </div>
             <div className="bg-[#1A1F25] rounded-lg p-6 space-y-6">
               <div className="space-y-4">
-                <Label htmlFor="num-questions">Número de preguntas (máx. 10)</Label>
-                <Input
-                  id="num-questions"
-                  type="number"
-                  min={3}
-                  max={10}
-                  value={numQuestions}
-                  onChange={(e) => setNumQuestions(Math.min(10, Math.max(1, parseInt(e.target.value) || 1)))}
-                  className="bg-[#272D36] border-0"
-                />
+                <Label>Número de preguntas</Label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[3, 5, 10, 15].map((num) => (
+                    <div
+                      key={num}
+                      className={cn(
+                        "cursor-pointer rounded-lg p-4 text-center transition-colors font-bold",
+                        numQuestions === num
+                          ? "bg-[#00FF88] text-black"
+                          : "bg-[#272D36] hover:bg-[#272D36]/80"
+                      )}
+                      onClick={() => setNumQuestions(num)}
+                    >
+                      {num}
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="space-y-4">

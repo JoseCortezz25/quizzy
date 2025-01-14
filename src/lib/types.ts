@@ -10,7 +10,7 @@ export type QuizInstruction = {
   difficulty: "easy" | "medium" | "hard" | "expert";
   questionType: QuestionType;
   instruction: string;
-  docs: string;
+  docs?: string;
 };
 
 export interface QuizQuestion {

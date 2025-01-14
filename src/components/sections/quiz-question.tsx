@@ -35,8 +35,8 @@ export default function QuizQuestion({
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptions[]>([]);
 
   const isButtonEnabled = useMemo(() => {
-    return selectedOptions.length === question.answer.length;
-  }, [selectedOptions.length, question.answer.length]);
+    return selectedOptions.length > 0;
+  }, [selectedOptions.length]);
 
   const handleSelectAnswer = (index: number, option: string) => {
     if (question.type === QuestionType.MultipleChoice) {
@@ -55,7 +55,6 @@ export default function QuizQuestion({
       return;
     }
 
-    // Single choice
     setSelectedOptions([{ index, option }]);
   };
 
@@ -66,7 +65,6 @@ export default function QuizQuestion({
 
     const selectedOptionsText = selectedOptions.map((option) => option.option);
 
-    // 1 for correct, 0 for incorrect
     onAnswer(isCorrect ? 1 : 0, selectedOptionsText);
     if (currentQuestionIndex < totalQuestions - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -79,7 +77,7 @@ export default function QuizQuestion({
   const options = ['A', 'B', 'C', 'D'];
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto mb-14 sm:mb-0">
       {/* Header */}
       <QuizNavbar
         title={title}
