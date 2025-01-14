@@ -14,7 +14,7 @@ type PDFState = {
 
 const usePDF = create<PDFState>((set) => ({
   uploadedPDF: null,
-  typeFile: "",
+  typeFile: FileType.PDF,
   setUploadedPDF: (pdf: File) => set({ uploadedPDF: pdf }),
   setTypeFile: (type: FileType) => set({ typeFile: type })
 }));

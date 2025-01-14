@@ -69,6 +69,8 @@ export default function QuizApp() {
     const currentQuestion = newUserAnswers[currentQuestionIndex];
     currentQuestion.isCorrect = !!isCorrect;
     currentQuestion.selectedOptions = selectedOptions;
+
+    setUserAnswers(newUserAnswers);
   };
 
   const handleNextQuestion = () => {

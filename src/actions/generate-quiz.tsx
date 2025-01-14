@@ -35,6 +35,29 @@ const generateSystemPrompt = ({
   `;
 };
 
+
+const generateSystemPromptImage = ({
+  numberQuestions,
+  focus,
+  difficulty,
+  instruction,
+  questionType
+}: QuizInstruction) => {
+  return `
+  Actua como un profesor experto con bastantes años de experiencia en cualquier tema.
+  Tu objetivo es crear un quiz con las siguientes características:
+  - Las preguntas deben ser sobre: ${instruction}
+  - ${numberQuestions} preguntas
+  - Enfocado en ${focus}
+  - Dificultad ${difficulty}
+  - Existen cuatro tipos de preguntas: Verdadero o Falso, selección múltiple con una sola respuesta, selección múltiple con múltiples respuestas. El tipo de pregunta debe ser: "${dictionaryQuestionType(questionType)}".
+  - Cuando el tipo de pregunta sea "Verdadero o Falso", las respuestas deben ser "Verdadero" o "Falso".
+  - Cuando el tipo de pregunta sea "Selección múltiple", las respuestas deben ser cuatro opciones y no debe tener la opción "Todas las anteriores".
+  - El contenido del cual debes basarte para crear el quiz debe ser la imagen suministrada por el usuario.
+  `;
+};
+
+
 type GenerateQuizParams = {
   numberQuestions: number;
   focus: "general" | "tecnictal" | "theoretical";
@@ -67,6 +90,12 @@ const getModelEmbeddings = (config: Options) => {
 
 const getModel = (config: Options) => {
   if (config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15) {
+    console.log("Using Google model");
+    console.log("Free", config.isFree);
+    console.log("API Key", process.env.GOOGLE_GEMINI_API);
+
+
+
     const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
     const google = createGoogleGenerativeAI({ apiKey });
     const model = google(config.model);
@@ -162,6 +191,83 @@ export const generateQuiz = async (
         docs: result,
         questionType
       })
+    });
+
+    const updatedQuiz = {
+      ...object.quiz,
+      questions: object.quiz.questions.map((question) => ({
+        ...question,
+        type: questionType
+      }))
+    };
+
+    return { quiz: updatedQuiz, title: object.title };
+  } catch (error) {
+    throw new Error("Ha ocurrido un error generando el quiz");
+  }
+};
+
+export const generateQuizBasedImage = async (
+  data: FormData,
+  image: string,
+  config: Options
+) => {
+  const instruction = data.get("question") as string | null;
+  const numberQuestions = Number(data.get("numberQuestions"));
+  const focus = data.get("focus") as GenerateQuizParams["focus"];
+  const difficulty = data.get("difficulty") as GenerateQuizParams["difficulty"];
+  const questionType = data.get("questionType") as GenerateQuizParams["questionType"];
+
+  const defaultModel = {
+    model: Models.Gemini15ProLatest,
+    apiKey: process.env.GOOGLE_GEMINI_API || ""
+  };
+
+  const model = config.isFree ? getModel(defaultModel) : getModel(config);
+
+  try {
+    const { object } = await generateObject({
+      model,
+      temperature: 0.6,
+      schema: z.object({
+        quiz: z.object({
+          questions: z.array(z.object({
+            question: z.string(),
+            options: z.array(z.string()).describe('Cuatro opciones de respuesta. Estas deben ser diferentes y no debe tener la opción "Todas las anteriores"'),
+            answer: z.array(z.string()).describe('Respuesta correcta. Puede haber más de una respuesta correcta, pero esto depende del tipo de pregunta'),
+            explanation: z.string().default('').describe('Explicación de la respuesta del por qué es correcta')
+          }))
+        }),
+        title: z.string().describe('Título del quiz')
+      }),
+      system: generateSystemPromptImage({
+        numberQuestions,
+        focus,
+        difficulty,
+        instruction: instruction || "",
+        questionType
+      }),
+      output: 'object',
+      messages: [
+        {
+          role: 'assistant',
+          content: [
+            {
+              type: 'text',
+              text: 'Genera un quiz basado en la imagen suministrada'
+            }
+          ]
+        },
+        {
+          role: 'user',
+          content: [
+            {
+              type: 'image',
+              image: image
+            }
+          ]
+        }
+      ]
     });
 
     const updatedQuiz = {

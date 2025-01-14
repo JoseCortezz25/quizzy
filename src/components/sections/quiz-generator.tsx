@@ -1,13 +1,12 @@
 'use client';
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
 import { GenerateQuiz, Models, Options, QuestionType } from '@/lib/types';
-import { generateQuiz } from '@/actions/generate-quiz';
-import { usePDF } from '@/store/store';
+import { generateQuiz, generateQuizBasedImage } from '@/actions/generate-quiz';
+import { FileType, usePDF } from '@/store/store';
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
 import { dictionaryQuestionType, cn } from '@/lib/utils';
@@ -35,12 +34,35 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
     return true;
   };
 
+  const handleQuizGeneration = (generateFunction: Promise<GenerateQuiz | undefined>) => {
+    generateFunction
+      .then((questions: GenerateQuiz | undefined) => {
+        if (questions) {
+          onGenerate(questions);
+          toast.success('Se ha generado el quiz correctamente');
+        } else {
+          toast.error('Error generando el quiz');
+          console.error('Failed to generate questions');
+        }
+      })
+      .catch((err) => {
+        toast.error('Error generando el quiz');
+        console.error('Error generating quiz:', err);
+      })
+      .finally(() => {
+        setIsGenerating(false);
+      });
+  };
+
   const handleGenerate = async () => {
     if (!validatePdfContent()) return;
 
     if (uploadedPDF) {
       const formData = new FormData();
-      formData.append('file', uploadedPDF);
+
+      if (typeFile === FileType.PDF) {
+        formData.append('file', uploadedPDF);
+      }
       formData.append('question', pdfContent);
       formData.append('numberQuestions', numQuestions.toString());
       formData.append('focus', focus);
@@ -57,22 +79,16 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       };
 
       setIsGenerating(true);
-      generateQuiz(formData, config)
-        .then((questions: GenerateQuiz | undefined) => {
-          if (questions) {
-            onGenerate(questions);
-            setIsGenerating(false);
-            toast.success('Se ha generado el quiz correctamente');
-          } else {
-            toast.error('Error generando el quiz');
-            console.error('Failed to generate questions');
-          }
-        })
-        .catch((err) => {
-          setIsGenerating(false);
-          toast.error('Error generando el quiz');
-          console.error('Error generating quiz:', err);
-        });
+
+      if (typeFile === FileType.IMAGE) {
+        const reader = new FileReader();
+        reader.readAsDataURL(uploadedPDF as Blob);
+        reader.onload = function () {
+          handleQuizGeneration(generateQuizBasedImage(formData, reader.result as string, config));
+        };
+      } else {
+        handleQuizGeneration(generateQuiz(formData, config));
+      }
     }
   };
 

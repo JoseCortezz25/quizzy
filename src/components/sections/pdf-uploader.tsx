@@ -16,17 +16,16 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
   const [showInvalidGenerate, setShowInvalidGenerate] = useState(false);
   const { setUploadedPDF, setTypeFile } = usePDF();
   const quizCount = typeof window !== 'undefined' ? parseInt(localStorage.getItem('quizCount') || '0') : 0;
-  const [activeTab, setActiveTab] = useState("FileType.PDF");
+  const [activeTab, setActiveTab] = useState(FileType.PDF);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const invalidGenerate = quizCount >= 5 && !localStorage.getItem('apiKey');
     setShowInvalidGenerate(invalidGenerate);
-  }, []);
+  }, [quizCount]);
 
   const handleUpload = () => {
     const fileInput = document.getElementById('fileInput');
-
     if (fileInput) {
       fileInput.click();
     }
@@ -190,7 +189,7 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
               defaultValue={FileType.PDF}
               className="file-tabs"
               onValueChange={(value) => {
-                setActiveTab(value);
+                setActiveTab(value as FileType);
                 setTypeFile(value as FileType);
               }}
             >
