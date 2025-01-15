@@ -78,7 +78,6 @@ const getModelEmbeddings = (config: Options) => {
     return model;
   }
 
-
   console.log("Using Google model");
 
   const model = new GoogleGenerativeAIEmbeddings({
@@ -91,12 +90,6 @@ const getModelEmbeddings = (config: Options) => {
 
 const getModel = (config: Options) => {
   if (config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15) {
-    console.log("Using Google model");
-    console.log("Free", config.isFree);
-    console.log("API Key", process.env.GOOGLE_GEMINI_API);
-
-
-
     const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
     const google = createGoogleGenerativeAI({ apiKey });
     const model = google(config.model);
@@ -169,7 +162,6 @@ export const generateQuiz = async (
     };
 
     const model = config.isFree ? getModel(defaultModel) : getModel(config);
-    console.log("Model created", model);
 
     const { object } = await generateObject({
       model: model,
@@ -220,14 +212,6 @@ export const generateQuizBasedImage = async (
   const focus = data.get("focus") as GenerateQuizParams["focus"];
   const difficulty = data.get("difficulty") as GenerateQuizParams["difficulty"];
   const questionType = data.get("questionType") as GenerateQuizParams["questionType"];
-
-  console.log("--------------------");
-  console.log("Instruction", instruction);
-  console.log("Number of questions", numberQuestions);
-  console.log("Focus", focus);
-  console.log("Difficulty", difficulty);
-  console.log("Question type", questionType);
-  console.log("--------------------");
 
   const defaultModel = {
     model: Models.Gemini15ProLatest,
@@ -292,7 +276,6 @@ export const generateQuizBasedImage = async (
     return { quiz: updatedQuiz, title: object.title };
   } catch (error) {
     console.log("Error in actions", error);
-
     throw new Error("Ha ocurrido un error generando el quiz");
   }
 };

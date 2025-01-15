@@ -20,6 +20,8 @@
     "@langchain/openai": "^0.3.14",
     "@langchain/textsplitters": "^0.1.0",
     "@next/third-parties": "^15.0.3",
+    "@opentelemetry/auto-instrumentations-node": "^0.55.1",
+    "@opentelemetry/sdk-node": "^0.57.0",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-select": "^2.1.2",
