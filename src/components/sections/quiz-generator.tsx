@@ -9,7 +9,7 @@ import { generateQuiz, generateQuizBasedImage } from '@/actions/generate-quiz';
 import { FileType, usePDF } from '@/store/store';
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
-import { dictionaryQuestionType, cn } from '@/lib/utils';
+import { dictionaryQuestionType, cn, compressImage } from '@/lib/utils';
 
 interface QuizGeneratorProps {
   onGenerate: (questions: GenerateQuiz) => void
@@ -59,7 +59,6 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
 
     if (uploadedPDF) {
       const formData = new FormData();
-
       if (typeFile === FileType.PDF) {
         formData.append('file', uploadedPDF);
       }
@@ -81,11 +80,22 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       setIsGenerating(true);
 
       if (typeFile === FileType.IMAGE) {
-        const reader = new FileReader();
-        reader.readAsDataURL(uploadedPDF as Blob);
-        reader.onload = function () {
-          handleQuizGeneration(generateQuizBasedImage(formData, reader.result as string, config));
-        };
+        try {
+          const compressedImage = await compressImage(uploadedPDF as File);
+          const reader = new FileReader();
+          reader.readAsDataURL(compressedImage);
+          reader.onload = function () {
+            const base64Image = reader.result as string;
+            handleQuizGeneration(generateQuizBasedImage(formData, base64Image, config));
+          };
+          reader.onerror = () => {
+            throw new Error('Failed to read image file');
+          };
+        } catch (error) {
+          toast.error('Error procesando la imagen');
+          setIsGenerating(false);
+          console.error('Error processing image:', error);
+        }
       } else {
         handleQuizGeneration(generateQuiz(formData, config));
       }
