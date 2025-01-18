@@ -1,4 +1,5 @@
 import { Brain } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface QuizNavbarProps {
   questionNumber: number;
@@ -11,6 +12,8 @@ export const QuizNavbar = ({
   totalQuestions,
   title
 }: QuizNavbarProps) => {
+  const t = useTranslations('QuizResults');
+
   return (
     <header className="flex flex-col sm:flex-row sm:items-center gap-2 justify-between py-6">
       <div className="flex items-center gap-2">
@@ -21,7 +24,7 @@ export const QuizNavbar = ({
       </div>
       <div className="flex items-center gap-4">
         <span className="text-gray-400">
-          Pregunta {questionNumber} de {totalQuestions}
+          {t('score.questionCountStart')} {questionNumber} {t('score.questionCountMiddle')} {totalQuestions}
         </span>
       </div>
     </header>

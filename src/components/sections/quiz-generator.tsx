@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
-import { GenerateQuiz, Models, Options, QuestionType } from '@/lib/types';
+import { GenerateQuiz, Languages, Models, Options, QuestionType } from '@/lib/types';
 import { generateQuiz, generateQuizBasedImage } from '@/actions/generate-quiz';
 import { FileType, usePDF } from '@/store/store';
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
 import { dictionaryQuestionType, cn, compressImage } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface QuizGeneratorProps {
   onGenerate: (questions: GenerateQuiz) => void
@@ -26,6 +26,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const [pdfContent, setPdfContent] = useState("");
   const { uploadedPDF, typeFile } = usePDF();
   const [pdfContentError, setPdfContentError] = useState("");
+  const locale = useLocale();
 
   const validatePdfContent = () => {
     if (!pdfContent.trim()) {
@@ -76,7 +77,8 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       const config: Options = {
         apiKey: window.localStorage.getItem('apiKey') || '',
         model: window.localStorage.getItem('model') as Models,
-        isFree
+        isFree,
+        language: locale === 'en' ? Languages.English : Languages.Spanish
       };
 
       setIsGenerating(true);
@@ -165,7 +167,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                   onValueChange={(value: string) => setQuestionType(value as QuestionType)}
                 >
                   <SelectTrigger id="question-type" className="bg-[#272D36] border-0">
-                    <SelectValue placeholder={t('selectQuestionType')} />
+                    <SelectValue placeholder={t('options.selectQuestionType')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={QuestionType.MultipleChoiceSingle}>

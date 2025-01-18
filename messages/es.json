@@ -75,6 +75,7 @@
         "description": "Genera preguntas específicas según el enfoque elegido"
       },
       "options": {
+        "selectQuestionType": "Seleccionar tipo de pregunta",
         "questionTypeOption": "Opción múltiple con una sola respuesta",
         "multipleChoice": "Opción múltiple con una sola respuesta",
         "trueOrFalse": "Verdadero o Falso",
@@ -97,6 +98,32 @@
       "difficulty": "Dificultad:",
       "questionType": "Tipo de pregunta:",
       "summary": "Basado en esta configuración, la IA generará un quiz personalizado con preguntas medias enfocadas en temas generales."
+    }
+  },
+  "QuizResults": {
+    "title": "Resultados",
+    "description": "Aquí puedes ver tus respuestas y los resultados del quiz.",
+    "score": {
+      "correct": "Respuestas correctas",
+      "percentage": "Porcentaje de respuestas correctas",
+      "questionCountStart": "Pregunta",
+      "questionCountMiddle": "de"
+    },
+    "questions": {
+      "use": "¿Cuál es uno de los principales usos del presente simple?",
+      "example": "¿Qué oración es un ejemplo del presente simple?",
+      "truth": "¿Qué oración usa el presente simple para expresar una verdad general?"
+    },
+    "answers": {
+      "habits": "Para describir hábitos y rutinas",
+      "breakfast": "Ella desayuna todos los días",
+      "earth": "La Tierra gira alrededor del Sol"
+    },
+    "actions": {
+      "retry": "Repetir quiz",
+      "share": "Compartir mis resultados en X",
+      "generate": "Generar otro quiz",
+      "why": "Explicar por qué es incorrecta"
     }
   }
 } 

@@ -11,6 +11,7 @@ export type QuizInstruction = {
   questionType: QuestionType;
   instruction: string;
   docs?: string;
+  language: Languages;
 };
 
 export interface QuizQuestion {
@@ -43,6 +44,7 @@ export interface Options {
   apiKey: string;
   model: Models;
   isFree?: boolean;
+  language?: Languages;
 }
 
 export enum QuestionType {
@@ -57,4 +59,9 @@ export type UserAnswer = {
   question: string;
   isCorrect: boolean;
   selectedOptions: string[];
+}
+
+export enum Languages {
+  Spanish = 'Spanish',
+  English = 'English',
 }

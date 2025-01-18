@@ -75,6 +75,7 @@
         }
       },
       "options" : {
+        "selectQuestionType": "Select question type",
         "questionTypeOption": "Multiple choice with single answer",
         "multipleChoice": "Multiple choice with single answer",
         "trueOrFalse": "True or False",
@@ -108,5 +109,31 @@
       "At the end, you'll know which knowledge you need to reinforce to master it."
     ],
     "startButton": "Start quiz"
+  },
+  "QuizResults": {
+    "title": "Results",
+    "description": "Here you can see your answers and quiz results.",
+    "score": {
+      "correct": "Correct answers",
+      "percentage": "Percentage of correct answers",
+      "questionCountStart": "Question",
+      "questionCountMiddle": "of"
+    },
+    "questions": {
+      "use": "What is one of the main uses of the simple present tense?",
+      "example": "Which sentence is an example of the simple present tense?",
+      "truth": "Which sentence uses the simple present tense to state a general truth?"
+    },
+    "answers": {
+      "habits": "To describe habits and routines",
+      "breakfast": "She eats breakfast every day",
+      "earth": "The Earth revolves around the Sun"
+    },
+    "actions": {
+      "retry": "Retry quiz",
+      "share": "Share my results on X",
+      "generate": "Generate another quiz",
+      "why": "Why is this the wrong answer?"
+    }
   }
 }

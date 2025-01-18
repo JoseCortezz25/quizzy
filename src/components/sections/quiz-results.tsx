@@ -6,6 +6,7 @@ import { QuestionType, type QuizQuestion, type UserAnswer } from '@/lib/types';
 import JSConfetti from 'js-confetti';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface QuizResultsProps {
   questions: QuizQuestion[];
@@ -20,6 +21,7 @@ export default function QuizResults({
   title,
   setStep
 }: QuizResultsProps) {
+  const t = useTranslations('QuizResults');
   const checkAnswer = (userAnswer: UserAnswer) => {
     return userAnswer.isCorrect;
   };
@@ -68,10 +70,10 @@ export default function QuizResults({
       {/* Summary */}
       <div className="mb-12">
         <h1 className="text-2xl font-bold text-gray-300">
-          Resultados
+          {t('title')}
         </h1>
         <p className="text-gray-400 mt-2">
-          Aquí puedes ver tus respuestas y los resultados del quiz.
+          {t('description')}
         </p>
 
         <div className="flex justify-between">
@@ -79,14 +81,14 @@ export default function QuizResults({
             <span className="text-gray-300 text-[2.5rem] md:text-[4rem] md:tracking-[-5px] font-extrabold">
               {rightAnswers} / {questions.length}
             </span>
-            <span className="text-gray-400">Respuestas correctas</span>
+            <span className="text-gray-400">{t('score.correct')}</span>
           </div>
 
           <div className="flex flex-col items-start mt-4">
             <span className="text-gray-300 text-[2.5rem] md:text-[4rem] font-extrabold">
               {percentage}%
             </span>
-            <span className="text-gray-400">Porcentaje de respuestas correctas</span>
+            <span className="text-gray-400">{t('score.percentage')}</span>
           </div>
         </div>
 
@@ -141,7 +143,7 @@ export default function QuizResults({
                       }
                     }}
                   >
-                    Explicar por qué es incorrecta
+                    {t('actions.why')}
                     <Sparkles className="w-6 h-6 ml-2 text-white" />
                   </Button>
 
@@ -163,14 +165,14 @@ export default function QuizResults({
             className="border-gray-700 text-gray-400 hover:bg-gray-800"
             onClick={() => setStep('intro')}
           >
-            Repetir quiz
+            {t('actions.retry')}
           </Button>
           <Button
             variant="outline"
             className="border-gray-700 text-gray-400 hover:bg-gray-800"
             onClick={shareOnTwitter}
           >
-            Compartir mis resultados en X
+            {t('actions.share')}
           </Button>
         </div>
 
@@ -178,7 +180,7 @@ export default function QuizResults({
           className="bg-white text-black hover:bg-gray-200"
           onClick={() => setStep('generate')}
         >
-          Generar otro quiz
+          {t('actions.generate')}
         </Button>
       </div>
     </div >

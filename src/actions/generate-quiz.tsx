@@ -1,15 +1,16 @@
 "use server";
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import type { Document } from '@langchain/core/documents';
+import type { GenerateQuiz, Options, QuizInstruction } from '@/lib/types';
+import { Languages, Models, QuestionType } from '@/lib/types';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createOpenAI } from '@ai-sdk/openai';
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
-import type { Document } from '@langchain/core/documents';
-import { Models, QuestionType, type GenerateQuiz, type Options, type QuizInstruction } from '@/lib/types';
 import { OpenAIEmbeddings } from "@langchain/openai";
-import { createOpenAI } from '@ai-sdk/openai';
 import { dictionaryQuestionType } from '@/lib/utils';
 import { AISDKExporter } from 'langsmith/vercel';
 
@@ -19,7 +20,8 @@ const generateSystemPrompt = ({
   difficulty,
   instruction,
   docs,
-  questionType
+  questionType,
+  language
 }: QuizInstruction) => {
   return `
   Actua como un profesor experto con bastantes años de experiencia en cualquier tema.
@@ -31,6 +33,7 @@ const generateSystemPrompt = ({
   - Existen cuatro tipos de preguntas: Verdadero o Falso, selección múltiple con una sola respuesta, selección múltiple con múltiples respuestas. El tipo de pregunta debe ser: "${dictionaryQuestionType(questionType)}".
   - Cuando el tipo de pregunta sea "Verdadero o Falso", las respuestas deben ser "Verdadero" o "Falso".
   - Cuando el tipo de pregunta sea "Selección múltiple", las respuestas deben ser cuatro opciones y no debe tener la opción "Todas las anteriores".
+  - El quiz debe ser generado en el idioma "${language}".
   Este es el contenido del PDF del cual se generan las preguntas:
   "${docs}"
   `;
@@ -42,7 +45,8 @@ const generateSystemPromptImage = ({
   focus,
   difficulty,
   instruction,
-  questionType
+  questionType,
+  language
 }: QuizInstruction) => {
   return `
   Actua como un profesor experto con bastantes años de experiencia en cualquier tema.
@@ -55,6 +59,7 @@ const generateSystemPromptImage = ({
   - Cuando el tipo de pregunta sea "Verdadero o Falso", las respuestas deben ser "Verdadero" o "Falso".
   - Cuando el tipo de pregunta sea "Selección múltiple", las respuestas deben ser cuatro opciones y no debe tener la opción "Todas las anteriores".
   - El contenido del cual debes basarte para crear el quiz debe ser la imagen suministrada por el usuario.
+  - El quiz debe ser generado en el idioma "${language}".
   `;
 };
 
@@ -182,7 +187,8 @@ export const generateQuiz = async (
         difficulty,
         instruction: instruction || "",
         docs: result,
-        questionType
+        questionType,
+        language: config.language || Languages.Spanish
       }),
       // eslint-disable-next-line camelcase
       experimental_telemetry: AISDKExporter.getSettings()
@@ -240,7 +246,8 @@ export const generateQuizBasedImage = async (
         focus,
         difficulty,
         instruction: instruction || "",
-        questionType
+        questionType,
+        language: config.language || Languages.Spanish
       }),
       output: 'object',
       messages: [
