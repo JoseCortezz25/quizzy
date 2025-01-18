@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FileUp, Check, File, OctagonXIcon, ImagePlusIcon } from 'lucide-react';
 import { FileType, usePDF } from '@/store/store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useTranslations } from 'next-intl';
 
 interface PDFUploaderProps {
   onUpload: () => void;
@@ -18,6 +19,7 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
   const quizCount = typeof window !== 'undefined' ? parseInt(localStorage.getItem('quizCount') || '0') : 0;
   const [activeTab, setActiveTab] = useState(FileType.PDF);
   const [error, setError] = useState<string | null>(null);
+  const t = useTranslations('HomePage');
 
   useEffect(() => {
     const invalidGenerate = quizCount >= 5 && !localStorage.getItem('apiKey');
@@ -89,7 +91,7 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
       <div className="flex flex-col items-center">
         <OctagonXIcon className="w-16 h-16 text-[#00FF88] mb-4" />
         <p className="text-[#00FF88] font-semibold mb-4 w-[60%] text-center">
-          Has alcanzado el límite de quizzes gratuitos. Para continuar, agrega tu API key.
+          {t('mainContent.limit')}
         </p>
       </div>
     );
@@ -99,12 +101,12 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
     return (
       <div className="flex flex-col items-center">
         <Check className="w-16 h-16 text-[#00FF88] mb-4" />
-        <p className="text-[#00FF88] font-semibold mb-4">Archivo subido con éxito</p>
+        <p className="text-[#00FF88] font-semibold mb-4">{t('mainContent.file.title')}</p>
         <Button
           onClick={onUpload}
           className="bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
         >
-          Generar Quiz
+          {t('mainContent.file.cta')}
         </Button>
       </div>
     );
@@ -129,7 +131,7 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
             </div>
           ) : (
             <p className="text-gray-400">
-              Haz clic para seleccionar un {activeTab === FileType.PDF ? "PDF" : "imagen"}
+              {t('mainContent.file.select')} {activeTab === FileType.PDF ? t('mainContent.file.pdf') : t('mainContent.file.image')}
             </p>
           )}
           {error && (
@@ -148,7 +150,7 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
           disabled={isUploading}
           className="w-full bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
         >
-          {isUploading ? 'Subiendo...' : `Subir ${activeTab === FileType.PDF ? "PDF" : "imagen"}`}
+          {isUploading ? t('mainContent.file.submiting') : `${t('mainContent.file.submit')} ${activeTab === FileType.PDF ? t('mainContent.file.pdf') : t('mainContent.file.image')}`}
         </Button>
       </div>
     );
@@ -161,30 +163,29 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
         <div className="mx-auto py-12 grid grid-cols-1 md:grid-cols-2 gap-16">
           <div className="space-y-6">
             <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-              Genera quizzes inteligentes con IA en segundos
+              {t('mainContent.headline')}
             </h1>
             <p className="text-xl text-gray-400 text-balance">
-              Sube tu <b>PDF</b> o <b>Imagen</b> y deja que la IA cree un quiz personalizado para ti.
-              Perfecto para todos los estudiantes que quieren estudiar de manera más eficiente.
+              {t('mainContent.description')}
             </p>
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
                 <Check className="w-5 h-5 text-[#00FF88]" />
-                <span>Preguntas generadas por IA</span>
+                <span>{t('mainContent.features.aiQuestions')}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-5 h-5 text-[#00FF88]" />
-                <span>Adaptado a tu contenido</span>
+                <span>{t('mainContent.features.tailoredContent')}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Check className="w-5 h-5 text-[#00FF88]" />
-                <span>Resultados y retroalimentación instantáneos</span>
+                <span>{t('mainContent.features.instantFeedback')}</span>
               </li>
             </ul>
           </div>
 
           {/* Right column - PDF upload */}
-          <div className="bg-[#1A1F25] rounded-lg p-8 flex flex-col items-start justify-center md:max-w-[95%]">
+          <div className="bg-[#1A1F25] rounded-lg p-8 flex flex-col items-center justify-center md:max-w-[95%]">
             <Tabs
               defaultValue={FileType.PDF}
               className="file-tabs"
@@ -194,8 +195,8 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
               }}
             >
               <TabsList className="file-tabs__list">
-                <TabsTrigger value={FileType.PDF}>PDF</TabsTrigger>
-                <TabsTrigger value={FileType.IMAGE}>Imagen</TabsTrigger>
+                <TabsTrigger value={FileType.PDF}>{t('mainContent.file.pdf')}</TabsTrigger>
+                <TabsTrigger value={FileType.IMAGE} className="capitalize">{t('mainContent.file.image')}</TabsTrigger>
               </TabsList>
               <TabsContent value={FileType.PDF}>
                 <section className="w-full">
@@ -204,9 +205,9 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
                       <FileUp className="w-10 h-10 text-[#00FF88]" />
                     </div>
                     <div className="flex flex-col items-center sm:items-start">
-                      <h2 className="text-2xl font-bold">Sube tu PDF</h2>
-                      <p className="text-gray-400 mb-6 text-balance text-center sm:text-start">
-                        Arrastra y suelta tu archivo PDF aquí, o haz clic para seleccionar.
+                      <h2 className="text-2xl font-bold">{t('mainContent.file.headline')} {t('mainContent.file.pdf')}</h2>
+                      <p className="text-gray-400 mb-6 text-balance text-center sm:text-start md:max-w-[320px]">
+                        {t('mainContent.file.description.pdf')}
                       </p>
                     </div>
                   </div>
@@ -223,9 +224,9 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
                       <ImagePlusIcon className="w-10 h-10 text-[#00FF88]" />
                     </div>
                     <div className="flex flex-col items-center sm:items-start">
-                      <h2 className="text-2xl font-bold">Sube tu Imagen</h2>
-                      <p className="text-gray-400 mb-6 text-center sm:text-start">
-                        Arrastra y suelta tu imagen aquí, o haz clic para seleccionar.
+                      <h2 className="text-2xl font-bold">{t('mainContent.file.headline')} {t('mainContent.file.image')}</h2>
+                      <p className="text-gray-400 mb-6 text-balance text-center sm:text-start md:max-w-[320px]">
+                        {t('mainContent.file.description.image')}
                       </p>
                     </div>
                   </div>

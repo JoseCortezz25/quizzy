@@ -4,18 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
-import { GenerateQuiz, Models, Options, QuestionType } from '@/lib/types';
+import { GenerateQuiz, Languages, Models, Options, QuestionType } from '@/lib/types';
 import { generateQuiz, generateQuizBasedImage } from '@/actions/generate-quiz';
 import { FileType, usePDF } from '@/store/store';
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
 import { dictionaryQuestionType, cn, compressImage } from '@/lib/utils';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface QuizGeneratorProps {
   onGenerate: (questions: GenerateQuiz) => void
 }
 
 export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
+  const t = useTranslations('QuizConfig');
   const [isGenerating, setIsGenerating] = useState(false);
   const [numQuestions, setNumQuestions] = useState(5);
   const [focus, setFocus] = useState<"general" | "tecnictal" | "theoretical">("general");
@@ -24,10 +26,11 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const [pdfContent, setPdfContent] = useState("");
   const { uploadedPDF, typeFile } = usePDF();
   const [pdfContentError, setPdfContentError] = useState("");
+  const locale = useLocale();
 
   const validatePdfContent = () => {
     if (!pdfContent.trim()) {
-      setPdfContentError("Por favor, especifica los temas para generar las preguntas");
+      setPdfContentError(t('topicsPlaceholder'));
       return false;
     }
     setPdfContentError("");
@@ -39,14 +42,14 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       .then((questions: GenerateQuiz | undefined) => {
         if (questions) {
           onGenerate(questions);
-          toast.success('Se ha generado el quiz correctamente');
+          toast.success(t('generateButton'));
         } else {
-          toast.error('Error generando el quiz');
+          toast.error(t('errorGeneratingQuiz'));
           console.error('Failed to generate questions');
         }
       })
       .catch((err) => {
-        toast.error('Error generando el quiz');
+        toast.error(t('errorGeneratingQuiz'));
         console.error('Error generating quiz:', err);
       })
       .finally(() => {
@@ -74,7 +77,8 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       const config: Options = {
         apiKey: window.localStorage.getItem('apiKey') || '',
         model: window.localStorage.getItem('model') as Models,
-        isFree
+        isFree,
+        language: locale === 'en' ? Languages.English : Languages.Spanish
       };
 
       setIsGenerating(true);
@@ -92,7 +96,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
             throw new Error('Failed to read image file');
           };
         } catch (error) {
-          toast.error('Error procesando la imagen');
+          toast.error(t('errorProcessingImage'));
           setIsGenerating(false);
           console.error('Error processing image:', error);
         }
@@ -110,17 +114,17 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
           {/* Left Column - Configuration Form */}
           <div className="space-y-6">
             <div>
-              <h1 className="text-2xl font-bold mb-2">Configuración del Quiz</h1>
-              <p className="text-gray-400">Personaliza tu quiz según tus necesidades</p>
+              <h1 className="text-2xl font-bold mb-2">{t('title')}</h1>
+              <p className="text-gray-400">{t('description')}</p>
             </div>
 
             <div className="space-y-4">
               <Label htmlFor="pdf-content">
-                ¿Sobre qué temas quieres que se generen las preguntas?
+                {t('topicsQuestion')}
               </Label>
               <Textarea
                 id="pdf-content"
-                placeholder="Escribe que temas quieres que se generen las preguntas con base en el contenido del PDF"
+                placeholder={t('topicsPlaceholder')}
                 value={pdfContent}
                 onChange={(e) => {
                   setPdfContent(e.target.value);
@@ -137,7 +141,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
             </div>
             <div className="bg-[#1A1F25] rounded-lg p-6 space-y-6">
               <div className="space-y-4">
-                <Label>Número de preguntas</Label>
+                <Label>{t('questionCount')}</Label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[3, 5, 10, 15].map((num) => (
                     <div
@@ -157,56 +161,56 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
               </div>
 
               <div className="space-y-4">
-                <Label htmlFor="question-type">Tipo de pregunta</Label>
+                <Label htmlFor="question-type">{t('questionType')}</Label>
                 <Select
                   value={questionType}
                   onValueChange={(value: string) => setQuestionType(value as QuestionType)}
                 >
                   <SelectTrigger id="question-type" className="bg-[#272D36] border-0">
-                    <SelectValue placeholder="Selecciona el tipo de pregunta" />
+                    <SelectValue placeholder={t('options.selectQuestionType')} />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={QuestionType.MultipleChoiceSingle}>
-                      Opción multiple con una sola respuesta
+                      {t('options.questionTypeOption')}
                     </SelectItem>
                     <SelectItem value={QuestionType.MultipleChoice}>
-                      Opción multiple con múltiples respuestas
+                      {t('options.multipleChoice')}
                     </SelectItem>
                     <SelectItem value={QuestionType.TrueOrFalse}>
-                      Verdadero o Falso
+                      {t('options.trueOrFalse')}
                     </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-4">
-                <Label htmlFor="focus">Enfoque del quiz</Label>
+                <Label htmlFor="focus">{t('quizFocus')}</Label>
                 <Select
                   value={focus}
                   onValueChange={(value: string) => setFocus(value as "general" | "tecnictal" | "theoretical")
                   }>
                   <SelectTrigger id="focus" className="bg-[#272D36] border-0">
-                    <SelectValue placeholder="Selecciona un enfoque" />
+                    <SelectValue placeholder={t('options.selectFocus')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="tecnictal">Técnico</SelectItem>
-                    <SelectItem value="theoretical">Teórico</SelectItem>
+                    <SelectItem value="general">{t('options.general')}</SelectItem>
+                    <SelectItem value="tecnictal">{t('options.technical')}</SelectItem>
+                    <SelectItem value="theoretical">{t('options.theoretical')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-4">
-                <Label htmlFor="difficulty">Nivel de dificultad</Label>
+                <Label htmlFor="difficulty">{t('options.selectDifficulty')}</Label>
                 <Select value={difficulty} onValueChange={setDifficulty}>
                   <SelectTrigger id="difficulty" className="bg-[#272D36] border-0">
-                    <SelectValue placeholder="Selecciona la dificultad" />
+                    <SelectValue placeholder={t('options.selectDifficulty')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="facil">Fácil</SelectItem>
-                    <SelectItem value="medio">Medio</SelectItem>
-                    <SelectItem value="dificil">Difícil</SelectItem>
-                    <SelectItem value="experto">Experto</SelectItem>
+                    <SelectItem value="facil">{t('options.easy')}</SelectItem>
+                    <SelectItem value="medio">{t('options.medium')}</SelectItem>
+                    <SelectItem value="dificil">{t('options.hard')}</SelectItem>
+                    <SelectItem value="experto">{t('options.expert')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -217,7 +221,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
               disabled={isGenerating}
               className="w-full bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
             >
-              {isGenerating ? 'Generando preguntas...' : 'Generar Quiz'}
+              {isGenerating ? t('generatingQuestions') : t('generateButton')}
             </Button>
           </div>
 
@@ -226,31 +230,31 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
             <div className="bg-[#1A1F25] rounded-lg p-8">
               <div className="flex items-center gap-3 mb-6">
                 <Sparkles className="w-6 h-6 text-[#00FF88]" />
-                <h2 className="text-xl font-bold">Quiz Personalizado con IA</h2>
+                <h2 className="text-xl font-bold">{t('aiFeatures.title')}</h2>
               </div>
 
               <div className="space-y-6 mb-8">
-                <h3 className="text-lg font-semibold">Características de la IA:</h3>
+                <h3 className="text-lg font-semibold">{t('aiFeatures.characteristics')}</h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-[#00FF88] mt-1" />
                     <div>
-                      <p className="font-medium">Generación de preguntas inteligente</p>
-                      <p className="text-sm text-gray-400">Nuestra IA crea preguntas únicas basadas en el contenido proporcionado</p>
+                      <p className="font-medium">{t('aiFeatures.intelligentQuestions.title')}</p>
+                      <p className="text-sm text-gray-400">{t('aiFeatures.intelligentQuestions.description')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Target className="w-5 h-5 text-[#00FF88] mt-1" />
                     <div>
-                      <p className="font-medium">Adaptabilidad al nivel de dificultad</p>
-                      <p className="text-sm text-gray-400">Las preguntas se ajustan automáticamente según el nivel seleccionado</p>
+                      <p className="font-medium">{t('aiFeatures.adaptability.title')}</p>
+                      <p className="text-sm text-gray-400">{t('aiFeatures.adaptability.description')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
                     <Zap className="w-5 h-5 text-[#00FF88] mt-1" />
                     <div>
-                      <p className="font-medium">Enfoque personalizado</p>
-                      <p className="text-sm text-gray-400">Genera preguntas específicas según el enfoque elegido</p>
+                      <p className="font-medium">{t('aiFeatures.personalizedApproach.title')}</p>
+                      <p className="text-sm text-gray-400">{t('aiFeatures.personalizedApproach.description')}</p>
                     </div>
                   </div>
                 </div>
@@ -258,18 +262,17 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
 
               {/* Preview */}
               <div className="mt-8">
-                <h3 className="text-lg font-semibold mb-4">Vista previa del quiz:</h3>
+                <h3 className="text-lg font-semibold mb-4">{t('preview.title')}</h3>
                 <div className="bg-[#272D36] rounded-lg p-4 space-y-4">
-                  <p className="font-medium">Configuración actual:</p>
+                  <p className="font-medium">{t('preview.currentConfig')}</p>
                   <ul className="list-disc list-inside text-sm text-gray-400">
-                    <li>Número de preguntas: {numQuestions}</li>
-                    <li>Enfoque: {focus}</li>
-                    <li>Dificultad: {difficulty}</li>
-                    <li>Tipo de pregunta: {dictionaryQuestionType(questionType)}</li>
+                    <li>{t('preview.questionCount')}: {numQuestions}</li>
+                    <li>{t('preview.focus')}: {focus}</li>
+                    <li>{t('preview.difficulty')}: {difficulty}</li>
+                    <li>{t('preview.questionType')}: {dictionaryQuestionType(questionType)}</li>
                   </ul>
                   <p className="text-sm text-gray-400">
-                    Basado en esta configuración, la IA generará un quiz personalizado
-                    con preguntas {difficulty}s enfocadas en temas {focus}es.
+                    {t('preview.summary')}
                   </p>
                 </div>
               </div>

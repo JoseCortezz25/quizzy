@@ -15,11 +15,13 @@ import { toast } from "sonner";
 import { Google, OpenAI } from "@/components/icons";
 import { EyeIcon, EyeOff } from "lucide-react";
 import { Models } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 const Settings = () => {
   const [apiKey, setApiKey] = useState(localStorage.getItem("apiKey") || "");
   const [model, setModel] = useState(localStorage.getItem("model") || "gpt4o");
   const [isShowAPiKey, setIsShowAPiKey] = useState(false);
+  const t = useTranslations('PageInformation');
 
   const onSaveSettings = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,9 +53,9 @@ const Settings = () => {
     <section className="!mt-[30px]">
       <form onSubmit={onSaveSettings}>
         <div className="group-fields">
-          <Label>Selecciona el modelo</Label>
+          <Label>{t('settings.question-one')}</Label>
           <p>
-            Elige el modelo de IA que deseas utilizar para la generación del quiz.
+            {t('settings.description-one')}
           </p>
           <Select onValueChange={(e) => setModel(e)} defaultValue={model}>
             <SelectTrigger className="w-full">
@@ -93,9 +95,9 @@ const Settings = () => {
 
 
         <div className="group-fields">
-          <Label>Ingresa tu API KEY</Label>
+          <Label> {t('settings.question-two')}</Label>
           <p>
-            Ingresa tu clave de API para poder utilizar los servicios del modelo que seleccionaste.
+            {t('settings.description-two')}
           </p>
           <div className="flex relative">
             <Input
@@ -121,7 +123,7 @@ const Settings = () => {
         </div>
 
         <Button className="w-full" type="submit">
-          Guardar configuración
+          {t('settings.cta')}
         </Button>
       </form>
     </section>

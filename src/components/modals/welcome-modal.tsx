@@ -6,6 +6,7 @@ import {
   DialogTitle,
   DialogDescription
 } from "@/components/ui/dialog";
+import { useTranslations } from 'next-intl';
 
 interface WelcomeModalProps {
   open: boolean;
@@ -13,6 +14,8 @@ interface WelcomeModalProps {
 }
 
 export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
+  const t = useTranslations('HomePage');
+
   return (
     <Dialog
       open={open}
@@ -20,18 +23,18 @@ export const WelcomeModal = ({ open, onOpenChange }: WelcomeModalProps) => {
     >
       <DialogContent className="bg-[#0A0E12]">
         <DialogHeader>
-          <DialogTitle className="text-2xl">¡Bienvenido a AI Quiz Generator!</DialogTitle>
+          <DialogTitle className="text-2xl">
+            {t('modal.title')}
+          </DialogTitle>
           <DialogDescription className="pt-4">
             <p className="mb-4">
-              Puedes usar la aplicación de forma gratuita para generar hasta 5 quizzes.
+              {t('modal.freeUseInfo')}
             </p>
             <p className="mb-4">
-              Después de alcanzar este límite, necesitarás configurar tu propia API key
-              de Google o OpenAI para continuar usando la aplicación.
+              {t('modal.apiKeyRequirement')}
             </p>
             <p>
-              Puedes configurar tu API key en cualquier momento haciendo clic en el
-              ícono de configuración ⚙️ en la barra superior.
+              {t('modal.apiKeySetupInfo')}
             </p>
           </DialogDescription>
         </DialogHeader>

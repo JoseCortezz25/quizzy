@@ -143,7 +143,6 @@
     }
 
     button[data-state="active"] {
-      // @apply bg-[#1A1F25];
       @apply bg-[#00FF88] text-[#1A1F25] font-bold;
     }
   }

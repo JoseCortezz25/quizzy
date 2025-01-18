@@ -1,0 +1,129 @@
+{
+  "PageInformation": {
+    "header": {
+      "count": "cuestionarios generados",
+      "spanish": "Español",
+      "english": "Inglés"
+    },
+    "settings": {
+      "title": "Configuración",
+      "description": "Elige el proveedor que quieres usar para generar cuestionarios y configura tu clave API.",
+      "question-one": "Elige el proveedor",
+      "description-one": "Selecciona el proveedor que quieres usar para generar cuestionarios.",
+      "question-two": "Clave API",
+      "description-two": "Ingresa tu clave API para poder utilizar los servicios del modelo que seleccionaste.",
+      "cta": "Guardar configuración",
+      "created": "Creado por"
+    }
+  },
+  "HomePage": {
+    "modal": {
+      "title": "¡Bienvenido a AI Quiz Generator!",
+      "freeUseInfo": "Puedes usar la aplicación de forma gratuita para generar hasta 5 cuestionarios.",
+      "apiKeyRequirement": "Después de alcanzar este límite, necesitarás configurar tu propia clave API de Google o OpenAI para continuar usando la aplicación.",
+      "apiKeySetupInfo": "Puedes configurar tu clave API en cualquier momento haciendo clic en el ícono de configuración ⚙️ en la barra superior."
+    },
+    "mainContent": {
+      "headline": "Genera cuestionarios inteligentes con IA en segundos",
+      "description": "Sube tu PDF o imagen y deja que la IA cree un cuestionario personalizado para ti. Perfecto para todos los estudiantes que quieren estudiar de manera más eficiente.",
+      "features": {
+        "aiQuestions": "Preguntas generadas por IA",
+        "tailoredContent": "Adaptado a tu contenido",
+        "instantFeedback": "Resultados y retroalimentación instantánea"
+      },
+      "limit": "Has alcanzado el límite de cuestionarios gratuitos. Para continuar, agrega tu clave API.",
+      "file": {
+        "headline": "Sube tu",
+        "description": {
+          "image": "Arrastra y suelta tu imagen aquí, o haz clic para seleccionar.",
+          "pdf": "Arrastra y suelta tu archivo PDF aquí, o haz clic para seleccionar."
+        },
+        "select": "Haz clic para seleccionar un",
+        "image": "imagen",
+        "pdf": "PDF",
+        "title": "Archivo subido exitosamente",
+        "cta": "Generar cuestionario",
+        "submiting": "Subiendo...",
+        "submit": "Subir"
+      }
+    }
+  },
+  "QuizConfig": {
+    "title": "Configuración del Quiz",
+    "description": "Personaliza tu quiz según tus necesidades",
+    "topicsQuestion": "¿Sobre qué temas quieres que se generen las preguntas?",
+    "topicsPlaceholder": "Escribe qué temas quieres que se generen las preguntas con base al contenido proporcionado",
+    "questionCount": "Número de preguntas",
+    "questionType": "Tipo de pregunta",
+    "questionTypeOption": "Opción múltiple con una sola respuesta",
+    "quizFocus": "Enfoque del quiz",
+    "generatingQuestions": "Generando preguntas...",
+    "generateButton": "Generar Quiz",
+    "aiFeatures": {
+      "title": "Quiz Personalizado con IA",
+      "characteristics": "Características de la IA:",
+      "intelligentQuestions": {
+        "title": "Generación de preguntas inteligente",
+        "description": "Nuestra IA crea preguntas únicas basadas en el contenido proporcionado"
+      },
+      "adaptability": {
+        "title": "Adaptabilidad al nivel de dificultad",
+        "description": "Las preguntas se ajustan automáticamente según el nivel seleccionado"
+      },
+      "personalizedApproach": {
+        "title": "Enfoque personalizado",
+        "description": "Genera preguntas específicas según el enfoque elegido"
+      },
+      "options": {
+        "selectQuestionType": "Seleccionar tipo de pregunta",
+        "questionTypeOption": "Opción múltiple con una sola respuesta",
+        "multipleChoice": "Opción múltiple con una sola respuesta",
+        "trueOrFalse": "Verdadero o Falso",
+        "selectFocus": "Seleccionar enfoque",
+        "general": "General",
+        "technical": "Técnico",
+        "theoretical": "Teórico",
+        "selectDifficulty": "Seleccionar dificultad",
+        "easy": "Fácil",
+        "medium": "Medio",
+        "hard": "Difícil",
+        "expert": "Experto"
+      }
+    },
+    "preview": {
+      "title": "Vista previa del quiz:",
+      "currentConfig": "Configuración actual:",
+      "questionCount": "Número de preguntas:",
+      "focus": "Enfoque:",
+      "difficulty": "Dificultad:",
+      "questionType": "Tipo de pregunta:",
+      "summary": "Basado en esta configuración, la IA generará un quiz personalizado con preguntas medias enfocadas en temas generales."
+    }
+  },
+  "QuizResults": {
+    "title": "Resultados",
+    "description": "Aquí puedes ver tus respuestas y los resultados del quiz.",
+    "score": {
+      "correct": "Respuestas correctas",
+      "percentage": "Porcentaje de respuestas correctas",
+      "questionCountStart": "Pregunta",
+      "questionCountMiddle": "de"
+    },
+    "questions": {
+      "use": "¿Cuál es uno de los principales usos del presente simple?",
+      "example": "¿Qué oración es un ejemplo del presente simple?",
+      "truth": "¿Qué oración usa el presente simple para expresar una verdad general?"
+    },
+    "answers": {
+      "habits": "Para describir hábitos y rutinas",
+      "breakfast": "Ella desayuna todos los días",
+      "earth": "La Tierra gira alrededor del Sol"
+    },
+    "actions": {
+      "retry": "Repetir quiz",
+      "share": "Compartir mis resultados en X",
+      "generate": "Generar otro quiz",
+      "why": "Explicar por qué es incorrecta"
+    }
+  }
+} 
