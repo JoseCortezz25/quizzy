@@ -6,8 +6,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Languages } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/routing";
 
 export const LanguageSelect = () => {
+  const t = useTranslations('PageInformation');
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,10 +26,14 @@ export const LanguageSelect = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-[#1A1F25] border border-[#1A1F25] rounded-lg">
         <DropdownMenuItem className="hover:!bg-[#0A0E12] cursor-pointer rounded-lg font-bold px-4 py-3">
-          English
+          <Link href="/" locale="en">
+            {t('header.english')}
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem className="hover:!bg-[#0A0E12] cursor-pointer rounded-lg font-bold px-4 py-3">
-          Spanish
+          <Link href="/" locale="es">
+            {t('header.spanish')}
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
