@@ -25,16 +25,16 @@ export const LanguageSelect = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-[#1A1F25] border border-[#1A1F25] rounded-lg">
-        <DropdownMenuItem className="hover:!bg-[#0A0E12] cursor-pointer rounded-lg font-bold px-4 py-3">
-          <Link href="/" locale="en">
+        <Link href="/" locale="en">
+          <DropdownMenuItem className="hover:!bg-[#0A0E12] cursor-pointer rounded-lg font-bold px-4 py-3">
             {t('header.english')}
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="hover:!bg-[#0A0E12] cursor-pointer rounded-lg font-bold px-4 py-3">
-          <Link href="/" locale="es">
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/" locale="es">
+          <DropdownMenuItem className="hover:!bg-[#0A0E12] cursor-pointer rounded-lg font-bold px-4 py-3">
             {t('header.spanish')}
-          </Link>
-        </DropdownMenuItem>
+          </DropdownMenuItem>
+        </Link>
       </DropdownMenuContent>
     </DropdownMenu>
   );
