@@ -1,6 +1,7 @@
 "use client";
 import { Brain } from "lucide-react";
 import SheetSettings from "./modals/sheet-setting";
+import { LanguageSelect } from "./language-select";
 
 interface NavbarProps {
   quizCount: number;
@@ -22,6 +23,7 @@ export const Navbar = ({ quizCount }: NavbarProps) => {
           )}
         </nav>
         <nav className="flex sm:items-center gap-4 w-[20%] justify-end sm:w-auto">
+          <LanguageSelect />
           <SheetSettings />
         </nav>
       </div>
