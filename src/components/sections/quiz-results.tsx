@@ -6,7 +6,7 @@ import { QuestionType, type QuizQuestion, type UserAnswer } from '@/lib/types';
 import JSConfetti from 'js-confetti';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface QuizResultsProps {
   questions: QuizQuestion[];
@@ -21,6 +21,7 @@ export default function QuizResults({
   title,
   setStep
 }: QuizResultsProps) {
+  const locale = useLocale();
   const t = useTranslations('QuizResults');
   const checkAnswer = (userAnswer: UserAnswer) => {
     return userAnswer.isCorrect;
@@ -39,8 +40,11 @@ export default function QuizResults({
 
   const shareOnTwitter = () => {
     const url = 'https://twitter.com/intent/tweet';
-    const text = `¡He obtenido un ${percentage} porciento en el quiz "${title}"! 🎉🎉🎉 \n\n
-    He tenido ${rightAnswers} respuestas correctas de ${questions.length} preguntas.\n\n`;
+    const text = locale === 'es'
+      ? `¡He obtenido un ${percentage} porciento en el quiz "${title}"! 🎉🎉🎉 \n\n
+          He tenido ${rightAnswers} respuestas correctas de ${questions.length} preguntas.\n\n`
+      : `I scored ${percentage} percent on the quiz "${title}"! 🎉🎉🎉 \n\n
+          I got ${rightAnswers} correct answers out of ${questions.length} questions.\n\n`;
     const hashtags = 'quizzy';
     const via = 'josecortezz16';
     const twitterUrl = `${url}?text=${text}&hashtags=${hashtags}&via=${via}`;
