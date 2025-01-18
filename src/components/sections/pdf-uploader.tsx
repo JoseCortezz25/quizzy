@@ -195,8 +195,8 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
               }}
             >
               <TabsList className="file-tabs__list">
-                <TabsTrigger value={FileType.PDF}>PDF</TabsTrigger>
-                <TabsTrigger value={FileType.IMAGE}>Imagen</TabsTrigger>
+                <TabsTrigger value={FileType.PDF}>{t('mainContent.file.pdf')}</TabsTrigger>
+                <TabsTrigger value={FileType.IMAGE} className="capitalize">{t('mainContent.file.image')}</TabsTrigger>
               </TabsList>
               <TabsContent value={FileType.PDF}>
                 <section className="w-full">

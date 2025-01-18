@@ -35,8 +35,8 @@
       "file": {
         "headline": "Upload your",
         "description": {
-          "image": "Drag and drop your PDF file here, or click to select.",
-          "pdf": "Drag and drop your image here, or click to select."
+          "image": "Drag and drop your image here, or click to select.",
+          "pdf": "Drag and drop your PDF file here, or click to select."
         },
         "select": "Click to select a",
         "image": "image",

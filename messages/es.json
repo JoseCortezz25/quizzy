@@ -35,8 +35,8 @@
       "file": {
         "headline": "Sube tu",
         "description": {
-          "image": "Arrastra y suelta tu archivo PDF aquí, o haz clic para seleccionar.",
-          "pdf": "Arrastra y suelta tu imagen aquí, o haz clic para seleccionar."
+          "image": "Arrastra y suelta tu imagen aquí, o haz clic para seleccionar.",
+          "pdf": "Arrastra y suelta tu archivo PDF aquí, o haz clic para seleccionar."
         },
         "select": "Haz clic para seleccionar un",
         "image": "imagen",
