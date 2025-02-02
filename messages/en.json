@@ -58,6 +58,7 @@
       "quizFocus": "Quiz focus",
       "generatingQuestions": "Generating questions...",
       "generateButton": "Generate Quiz",
+      "errorGeneratingQuiz": "Error generating quiz",
       "aiFeatures": {
         "title": "AI Personalized Quiz",
         "characteristics": "AI Features:",
