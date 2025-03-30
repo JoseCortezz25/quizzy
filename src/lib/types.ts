@@ -38,6 +38,8 @@ export enum Models {
   GPT4oMini = 'gpt-4o-mini',
   Gemini15ProLatest = 'gemini-1.5-pro-latest',
   GeminiFlash15 = 'gemini-1.5-flash-latest',
+  Gemini25ProExp = 'gemini-2.5-pro-exp-03-25',
+  Gemini20Flash = 'gemini-2.0-flash-001'
 }
 
 export interface Options {

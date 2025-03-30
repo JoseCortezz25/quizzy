@@ -77,6 +77,18 @@ const Settings = () => {
                   </span>
                 </div>
               </SelectItem>
+              <SelectItem value={Models.Gemini25ProExp} className="w-full cursor-pointer">
+                <div className="select-item">
+                  <Google />
+                  <p>Google - Gemini 2.5 Pro Exp <span className="text-[11px] bg-[#00FF88] text-[#1A1F25] rounded-full px-2 py-1">New</span></p>
+                </div>
+              </SelectItem>
+              <SelectItem value={Models.Gemini20Flash} className="w-full cursor-pointer">
+                <div className="select-item">
+                  <Google />
+                  <p>Google - Gemini 2.0 Flash <span className="text-[11px] bg-[#00FF88] text-[#1A1F25] rounded-full px-2 py-1">New</span></p>
+                </div>
+              </SelectItem>
               <SelectItem value={Models.Gemini15ProLatest} className="w-full cursor-pointer">
                 <div className="select-item">
                   <Google />
