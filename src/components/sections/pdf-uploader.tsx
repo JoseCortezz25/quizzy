@@ -13,9 +13,9 @@ interface PDFUploaderProps {
 export default function PDFUploader({ onUpload }: PDFUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [isUploaded, setIsUploaded] = useState(false);
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [fileNames, setFileNames] = useState<string[]>([]);
   const [showInvalidGenerate, setShowInvalidGenerate] = useState(false);
-  const { setUploadedPDF, setTypeFile } = usePDF();
+  const { setUploadedFiles, setTypeFile } = usePDF();
   const quizCount = typeof window !== 'undefined' ? parseInt(localStorage.getItem('quizCount') || '0') : 0;
   const [activeTab, setActiveTab] = useState(FileType.PDF);
   const [error, setError] = useState<string | null>(null);
@@ -51,19 +51,19 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file && isValidFileType(file)) {
-      uploadFile(file);
-      setFileName(file.name);
+    const files = Array.from(event.target.files || []);
+    if (files.length > 0 && files.every(isValidFileType)) {
+      uploadFiles(files);
+      setFileNames(files.map(file => file.name));
     }
   };
 
   const handleDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    const file = event.dataTransfer?.files[0];
-    if (file && isValidFileType(file)) {
-      uploadFile(file);
-      setFileName(file.name);
+    const files = Array.from(event.dataTransfer?.files || []);
+    if (files.length > 0 && files.every(isValidFileType)) {
+      uploadFiles(files);
+      setFileNames(files.map(file => file.name));
     }
   };
 
@@ -71,11 +71,11 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
     event.preventDefault();
   };
 
-  const uploadFile = (file: File | undefined) => {
+  const uploadFiles = (files: File[]) => {
     setShowInvalidGenerate(false);
     setIsUploading(true);
-    if (file) {
-      setUploadedPDF(file);
+    if (files.length > 0) {
+      setUploadedFiles(files);
       setTimeout(() => {
         setIsUploading(false);
         setIsUploaded(true);
@@ -124,10 +124,14 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
           className="border-2 border-dashed border-gray-700 rounded-lg p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#00FF88]/50 transition-colors"
           onClick={handleUpload}
         >
-          {fileName ? (
-            <div className="flex gap-4">
-              <File className="size-10 text-[#00FF88] mb-2" />
-              <p className="text-gray-400 text-start">{fileName}</p>
+          {fileNames.length > 0 ? (
+            <div className="flex flex-col gap-2 w-full">
+              {fileNames.map((fileName, index) => (
+                <div key={index} className="flex gap-4 items-center">
+                  <File className="size-6 text-[#00FF88]" />
+                  <p className="text-gray-400 text-start text-sm">{fileName}</p>
+                </div>
+              ))}
             </div>
           ) : (
             <p className="text-gray-400">
@@ -144,6 +148,7 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
           accept={activeTab === FileType.PDF ? "application/pdf" : "image/*"}
           className="hidden"
           onChange={handleFileChange}
+          multiple={activeTab === FileType.IMAGE}
         />
         <Button
           onClick={handleUpload}

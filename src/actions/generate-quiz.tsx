@@ -210,7 +210,7 @@ export const generateQuiz = async (
 
 export const generateQuizBasedImage = async (
   data: FormData,
-  image: string,
+  images: string[],
   config: Options
 ) => {
   const instruction = data.get("question") as string | null;
@@ -256,18 +256,16 @@ export const generateQuizBasedImage = async (
           content: [
             {
               type: 'text',
-              text: 'Genera un quiz basado en la imagen suministrada'
+              text: 'Genera un quiz basado en las imágenes suministradas'
             }
           ]
         },
         {
           role: 'user',
-          content: [
-            {
-              type: 'image',
-              image: image
-            }
-          ]
+          content: images.map(image => ({
+            type: 'image',
+            image
+          }))
         }
       ]
     });

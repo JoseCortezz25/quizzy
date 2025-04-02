@@ -24,7 +24,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const [difficulty, setDifficulty] = useState("medio");
   const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MultipleChoiceSingle);
   const [pdfContent, setPdfContent] = useState("");
-  const { uploadedPDF, typeFile } = usePDF();
+  const { uploadedFiles, typeFile } = usePDF();
   const [pdfContentError, setPdfContentError] = useState("");
   const locale = useLocale();
 
@@ -60,10 +60,10 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   const handleGenerate = async () => {
     if (!validatePdfContent()) return;
 
-    if (uploadedPDF) {
+    if (uploadedFiles.length > 0) {
       const formData = new FormData();
       if (typeFile === FileType.PDF) {
-        formData.append('file', uploadedPDF);
+        formData.append('file', uploadedFiles[0]);
       }
       formData.append('question', pdfContent);
       formData.append('numberQuestions', numQuestions.toString());
@@ -85,20 +85,26 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
 
       if (typeFile === FileType.IMAGE) {
         try {
-          const compressedImage = await compressImage(uploadedPDF as File);
-          const reader = new FileReader();
-          reader.readAsDataURL(compressedImage);
-          reader.onload = function () {
-            const base64Image = reader.result as string;
-            handleQuizGeneration(generateQuizBasedImage(formData, base64Image, config));
-          };
-          reader.onerror = () => {
-            throw new Error('Failed to read image file');
-          };
+          const compressedImages = await Promise.all(
+            uploadedFiles.map(file => compressImage(file))
+          );
+
+          const base64Images = await Promise.all(
+            compressedImages.map(blob => {
+              return new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              });
+            })
+          );
+
+          handleQuizGeneration(generateQuizBasedImage(formData, base64Images, config));
         } catch (error) {
           toast.error(t('errorProcessingImage'));
           setIsGenerating(false);
-          console.error('Error processing image:', error);
+          console.error('Error processing images:', error);
         }
       } else {
         handleQuizGeneration(generateQuiz(formData, config));
