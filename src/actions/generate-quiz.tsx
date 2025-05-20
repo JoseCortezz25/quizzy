@@ -94,7 +94,10 @@ const getModelEmbeddings = (config: Options) => {
 };
 
 const getModel = (config: Options) => {
-  if (config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15) {
+  if (
+    config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15 
+    || config.model === Models.Gemini20Flash || config.model === Models.Gemini25ProExp
+  ) {
     const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
     const google = createGoogleGenerativeAI({ apiKey });
     const model = google(config.model);
@@ -162,7 +165,7 @@ export const generateQuiz = async (
     const result = retrievedDocuments.map((doc) => doc.pageContent).join("\n");
 
     const defaultModel = {
-      model: Models.Gemini15ProLatest,
+      model: Models.Gemini20Flash,
       apiKey: process.env.GOOGLE_GEMINI_API || ""
     };
 
@@ -204,6 +207,8 @@ export const generateQuiz = async (
 
     return { quiz: updatedQuiz, title: object.title };
   } catch (error) {
+    console.error("ERROR", error);
+    
     throw new Error("Ha ocurrido un error generando el quiz");
   }
 };
