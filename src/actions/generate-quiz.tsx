@@ -88,14 +88,17 @@ const getModelEmbeddings = (config: Options) => {
 
   const model = new GoogleGenerativeAIEmbeddings({
     model: "text-embedding-004",
-    apiKey: config.model === Models.DeepSeekR1 ? process.env.GOOGLE_GEMINI_API : config.apiKey 
-  }); 
+    apiKey: config.model === Models.DeepSeekR1 ? process.env.GOOGLE_GEMINI_API : config.apiKey
+  });
 
   return model;
 };
 
 const getModel = (config: Options) => {
-  if (config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15) {
+  if (
+    config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15
+    || config.model === Models.Gemini20Flash || config.model === Models.Gemini25ProExp
+  ) {
     const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
     const google = createGoogleGenerativeAI({ apiKey });
     const model = google(config.model);
@@ -104,7 +107,7 @@ const getModel = (config: Options) => {
 
   if (config.model === Models.DeepSeekR1) {
     console.log("Using DeekSeek");
-    
+
     const model = ollama('deepseek-r1');
     return model;
   }
@@ -131,7 +134,7 @@ export const generateQuiz = async (
   }
 
   console.log("config", config);
-  
+
 
   try {
 
@@ -173,14 +176,14 @@ export const generateQuiz = async (
     const result = retrievedDocuments.map((doc) => doc.pageContent).join("\n");
 
     const defaultModel = {
-      model: Models.Gemini15ProLatest,
+      model: Models.Gemini20Flash,
       apiKey: process.env.GOOGLE_GEMINI_API || ""
     };
 
     const model = config.isFree ? getModel(defaultModel) : getModel(config);
 
     console.log("Model");
-    
+
     const { object } = await generateObject({
       model: model,
       schema: z.object({
@@ -217,15 +220,15 @@ export const generateQuiz = async (
 
     return { quiz: updatedQuiz, title: object.title };
   } catch (error) {
-    console.log("Un errorcito:", error);
-    
+    console.error("ERROR", error);
+
     throw new Error("Ha ocurrido un error generando el quiz");
   }
 };
 
 export const generateQuizBasedImage = async (
   data: FormData,
-  image: string,
+  images: string[],
   config: Options
 ) => {
   const instruction = data.get("question") as string | null;
@@ -271,18 +274,16 @@ export const generateQuizBasedImage = async (
           content: [
             {
               type: 'text',
-              text: 'Genera un quiz basado en la imagen suministrada'
+              text: 'Genera un quiz basado en las imágenes suministradas'
             }
           ]
         },
         {
           role: 'user',
-          content: [
-            {
-              type: 'image',
-              image: image
-            }
-          ]
+          content: images.map(image => ({
+            type: 'image',
+            image
+          }))
         }
       ]
     });

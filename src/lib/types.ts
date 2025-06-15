@@ -1,13 +1,13 @@
 export interface Question {
-  question: string
-  options: string[]
-  correctAnswer: number
+  question: string;
+  options: string[];
+  correctAnswer: number;
 }
 
 export type QuizInstruction = {
   numberQuestions: number;
-  focus: "general" | "tecnictal" | "theoretical";
-  difficulty: "easy" | "medium" | "hard" | "expert";
+  focus: 'general' | 'tecnictal' | 'theoretical';
+  difficulty: 'easy' | 'medium' | 'hard' | 'expert';
   questionType: QuestionType;
   instruction: string;
   docs?: string;
@@ -18,7 +18,7 @@ export interface QuizQuestion {
   question: string;
   options: string[];
   type: QuestionType;
-  answer: string | string[]; 
+  answer: string | string[];
   explanation: string;
 }
 
@@ -39,6 +39,8 @@ export enum Models {
   Gemini15ProLatest = 'gemini-1.5-pro-latest',
   GeminiFlash15 = 'gemini-1.5-flash-latest',
   DeepSeekR1 = 'deepseek-r1',
+  Gemini25ProExp = 'gemini-2.5-pro-exp-03-25',
+  Gemini20Flash = 'gemini-2.0-flash-001'
 }
 
 export interface Options {
@@ -60,9 +62,9 @@ export type UserAnswer = {
   question: string;
   isCorrect: boolean;
   selectedOptions: string[];
-}
+};
 
 export enum Languages {
   Spanish = 'Spanish',
-  English = 'English',
+  English = 'English'
 }

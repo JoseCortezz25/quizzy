@@ -49,56 +49,56 @@
     }
   },
   "QuizConfig": {
-      "title": "Quiz Configuration",
-      "description": "Customize your quiz according to your needs",
-      "topicsQuestion": "What topics do you want the questions to be generated about?",
-      "topicsPlaceholder": "Write what topics you want the questions to be generated based on the provided content",
-      "questionCount": "Number of questions",
-      "questionType": "Question type",
-      "quizFocus": "Quiz focus",
-      "generatingQuestions": "Generating questions...",
-      "generateButton": "Generate Quiz",
-      "errorGeneratingQuiz": "An error occurred while generating the quiz. Please try again.",
-      "aiFeatures": {
-        "title": "AI Personalized Quiz",
-        "characteristics": "AI Features:",
-        "intelligentQuestions": {
-          "title": "Intelligent question generation",
-          "description": "Our AI creates unique questions based on the provided content"
-        },
-        "adaptability": {
-          "title": "Difficulty level adaptability",
-          "description": "Questions automatically adjust according to the selected level"
-        },
-        "personalizedApproach": {
-          "title": "Personalized approach",
-          "description": "Generates specific questions according to the chosen focus"
-        }
+    "title": "Quiz Configuration",
+    "description": "Customize your quiz according to your needs",
+    "topicsQuestion": "What topics do you want the questions to be generated about?",
+    "topicsPlaceholder": "Write what topics you want the questions to be generated based on the provided content",
+    "questionCount": "Number of questions",
+    "questionType": "Question type",
+    "quizFocus": "Quiz focus",
+    "generatingQuestions": "Generating questions...",
+    "generateButton": "Generate Quiz",
+    "errorGeneratingQuiz": "An error occurred while generating the quiz. Please try again.",
+    "aiFeatures": {
+      "title": "AI Personalized Quiz",
+      "characteristics": "AI Features:",
+      "intelligentQuestions": {
+        "title": "Intelligent question generation",
+        "description": "Our AI creates unique questions based on the provided content"
       },
-      "options" : {
-        "selectQuestionType": "Select question type",
-        "questionTypeOption": "Multiple choice with single answer",
-        "multipleChoice": "Multiple choice with single answer",
-        "trueOrFalse": "True or False",
-        "selectFocus": "Select focus",
-        "general": "General",
-        "technical": "Tecnictal",
-        "theoretical": "Theoretical",
-        "selectDifficulty": "Select difficulty",
-        "easy": "Easy",
-        "medium": "Medium",
-        "hard": "Hard",
-        "expert": "Expert"
+      "adaptability": {
+        "title": "Difficulty level adaptability",
+        "description": "Questions automatically adjust according to the selected level"
       },
-      "preview": {
-        "title": "Quiz preview:",
-        "currentConfig": "Current configuration:",
-        "questionCount": "Number of questions",
-        "focus": "Focus",
-        "difficulty": "Difficulty",
-        "questionType": "Question type",
-        "summary": "Based on this configuration, the AI will generate a personalized quiz with medium-level questions focused on general topics."
+      "personalizedApproach": {
+        "title": "Personalized approach",
+        "description": "Generates specific questions according to the chosen focus"
       }
+    },
+    "options": {
+      "selectQuestionType": "Select question type",
+      "questionTypeOption": "Multiple choice with single answer",
+      "multipleChoice": "Multiple choice with single answer",
+      "trueOrFalse": "True or False",
+      "selectFocus": "Select focus",
+      "general": "General",
+      "technical": "Tecnictal",
+      "theoretical": "Theoretical",
+      "selectDifficulty": "Select difficulty",
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard",
+      "expert": "Expert"
+    },
+    "preview": {
+      "title": "Quiz preview:",
+      "currentConfig": "Current configuration:",
+      "questionCount": "Number of questions",
+      "focus": "Focus",
+      "difficulty": "Difficulty",
+      "questionType": "Question type",
+      "summary": "Based on this configuration, the AI will generate a personalized quiz with medium-level questions focused on general topics."
+    }
   },
   "QuizIntro": {
     "title": "Knowledge Quiz",
