@@ -38,6 +38,7 @@ export enum Models {
   GPT4oMini = 'gpt-4o-mini',
   Gemini15ProLatest = 'gemini-1.5-pro-latest',
   GeminiFlash15 = 'gemini-1.5-flash-latest',
+  DeepSeekR1 = 'deepseek-r1',
 }
 
 export interface Options {

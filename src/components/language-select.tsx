@@ -19,19 +19,19 @@ export const LanguageSelect = () => {
           asChild
           variant="ghost"
           size="icon"
-          className="dark:hover:bg-[#20352F] p-2 cursor-pointer"
+          className="dark:hover:bg-brand-green-900 p-2 cursor-pointer"
         >
           <Languages />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-[#1A1F25] border border-[#1A1F25] rounded-lg">
+      <DropdownMenuContent align="end" className="bg-brand-green-950 border border-brand-green-950 rounded-lg">
         <Link href="/" locale="en">
-          <DropdownMenuItem className="hover:!bg-[#0A0E12] cursor-pointer rounded-lg font-bold px-4 py-3">
+          <DropdownMenuItem className="hover:!bg-brand-dark-800 cursor-pointer rounded-lg font-bold px-4 py-3">
             {t('header.english')}
           </DropdownMenuItem>
         </Link>
         <Link href="/" locale="es">
-          <DropdownMenuItem className="hover:!bg-[#0A0E12] cursor-pointer rounded-lg font-bold px-4 py-3">
+          <DropdownMenuItem className="hover:!bg-brand-dark-800 cursor-pointer rounded-lg font-bold px-4 py-3">
             {t('header.spanish')}
           </DropdownMenuItem>
         </Link>

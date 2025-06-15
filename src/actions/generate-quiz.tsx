@@ -13,6 +13,7 @@ import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { dictionaryQuestionType } from '@/lib/utils';
 import { AISDKExporter } from 'langsmith/vercel';
+import { ollama } from 'ollama-ai-provider';
 
 const generateSystemPrompt = ({
   numberQuestions,
@@ -83,12 +84,12 @@ const getModelEmbeddings = (config: Options) => {
     return model;
   }
 
-  console.log("Using Google model");
+  console.log("Using Google model - Embeddings");
 
   const model = new GoogleGenerativeAIEmbeddings({
     model: "text-embedding-004",
-    apiKey: config.apiKey
-  });
+    apiKey: config.model === Models.DeepSeekR1 ? process.env.GOOGLE_GEMINI_API : config.apiKey 
+  }); 
 
   return model;
 };
@@ -98,6 +99,13 @@ const getModel = (config: Options) => {
     const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
     const google = createGoogleGenerativeAI({ apiKey });
     const model = google(config.model);
+    return model;
+  }
+
+  if (config.model === Models.DeepSeekR1) {
+    console.log("Using DeekSeek");
+    
+    const model = ollama('deepseek-r1');
     return model;
   }
 
@@ -121,6 +129,9 @@ export const generateQuiz = async (
     console.error("No file found in form data");
     return;
   }
+
+  console.log("config", config);
+  
 
   try {
 
@@ -168,6 +179,8 @@ export const generateQuiz = async (
 
     const model = config.isFree ? getModel(defaultModel) : getModel(config);
 
+    console.log("Model");
+    
     const { object } = await generateObject({
       model: model,
       schema: z.object({
@@ -204,6 +217,8 @@ export const generateQuiz = async (
 
     return { quiz: updatedQuiz, title: object.title };
   } catch (error) {
+    console.log("Un errorcito:", error);
+    
     throw new Error("Ha ocurrido un error generando el quiz");
   }
 };

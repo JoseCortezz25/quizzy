@@ -127,7 +127,7 @@ export default function QuizResults({
                 </div>
                 {isCorrect ? (
                   <div className="ml-4">
-                    <Check className="w-6 h-6 text-[#00FF88]" />
+                    <Check className="w-6 h-6 text-brand-green-600" />
                   </div>
                 ) : (
                   <div className="ml-4">
@@ -139,7 +139,7 @@ export default function QuizResults({
                 <div className="space-y-2">
                   <Button
                     variant="ghost"
-                    className="hover:bg-[#1A1F25]"
+                    className="hover:bg-brand-green-950"
                     onClick={() => {
                       const explanationElement = document.getElementById(`explanation-${index}`);
                       if (explanationElement) {
@@ -151,7 +151,7 @@ export default function QuizResults({
                     <Sparkles className="w-6 h-6 ml-2 text-white" />
                   </Button>
 
-                  <div id={`explanation-${index}`} className="border border-[#1A1F25] rounded-lg p-[20px]" style={{ display: 'none' }}>
+                  <div id={`explanation-${index}`} className="border border-brand-green-950 rounded-lg p-[20px]" style={{ display: 'none' }}>
                     {question.explanation}
                   </div>
                 </div>

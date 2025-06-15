@@ -7,7 +7,8 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { Locals } from "@/i18n/request";
-import "../globals.scss";
+import { ThemeProvider } from "next-themes";
+import "@/app/globals.scss";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -40,13 +41,15 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body className={inter.className}>
-        <NextIntlClientProvider messages={messages}>
-          <main>
-            {children}
-          </main>
-          <Toaster richColors />
-          <GoogleAnalytics gaId={GOOGLE_ANALYTICS} />
-        </NextIntlClientProvider>
+        <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
+          <NextIntlClientProvider messages={messages}>
+            <main>
+              {children}
+            </main>
+            <Toaster richColors />
+            <GoogleAnalytics gaId={GOOGLE_ANALYTICS} />
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

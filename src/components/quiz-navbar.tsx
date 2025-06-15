@@ -17,8 +17,8 @@ export const QuizNavbar = ({
   return (
     <header className="flex flex-col sm:flex-row sm:items-center gap-2 justify-between py-6">
       <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-[#00FF88]/10 flex items-center justify-center">
-          <Brain className="size-4 min-w-4 min-h-4 text-[#00FF88]" />
+        <div className="w-8 h-8 rounded-full bg-brand-green-600/10 flex items-center justify-center">
+          <Brain className="size-4 min-w-4 min-h-4 text-brand-green-600" />
         </div>
         <span className="text-gray-400">{title}</span>
       </div>
