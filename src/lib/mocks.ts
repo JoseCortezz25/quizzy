@@ -1,4 +1,4 @@
-import { GenerateQuiz, QuestionType } from "./types";
+import { GenerateQuiz, QuestionType, QuestionTypeLanguage } from "./types";
 
 export const generatedQuiz: GenerateQuiz = {
   title: "Test Quiz",
@@ -114,4 +114,66 @@ export const falseOrTrueQuiz: GenerateQuiz = {
       ]
   },
   title: "Quiz sobre Colombia"
+};
+
+
+export const languageQuizMock = {
+  title: "Mock Language Quiz",
+  questions: [
+    {
+      question: "Read the text and answer: What is the main idea?",
+      options: [
+        { option: "To explain a process", isCorrect: false },
+        { option: "To describe a place", isCorrect: false },
+        { option: "To narrate an event", isCorrect: true },
+        { option: "To compare two things", isCorrect: false }
+      ],
+      type: QuestionTypeLanguage.ReadAndRespond,
+      explanation: "The text narrates an event, as seen in the sequence of actions described."
+    },
+    {
+      question: "Organize the words: 'quickly / the / ran / dog'",
+      options: [
+        { option: "The dog ran quickly", isCorrect: true },
+        { option: "Quickly the dog ran", isCorrect: false },
+        { option: "Ran the dog quickly", isCorrect: false },
+        { option: "Dog quickly the ran", isCorrect: false }
+      ],
+      type: QuestionTypeLanguage.Organize,
+      explanation: "The correct order is 'The dog ran quickly' following English syntax."
+    },
+    {
+      question: "Fill in the blank: She ___ to the store yesterday.",
+      options: [
+        { option: "goes", isCorrect: false },
+        { option: "went", isCorrect: true },
+        { option: "gone", isCorrect: false },
+        { option: "going", isCorrect: false }
+      ],
+      type: QuestionTypeLanguage.FillInTheBlank,
+      explanation: "'Went' is the correct past tense form for 'go' in this context."
+    },
+    {
+      question: "Which is the correct answer to: What color is the sky on a clear day?",
+      options: [
+        { option: "Blue", isCorrect: true },
+        { option: "Green", isCorrect: false },
+        { option: "Red", isCorrect: false },
+        { option: "Yellow", isCorrect: false }
+      ],
+      type: QuestionTypeLanguage.MultipleChoice,
+      explanation: "The sky appears blue on a clear day due to Rayleigh scattering."
+    },
+    {
+      question: "Match the correct pair: 'Dog' - ?",
+      options: [
+        { option: "Cat", isCorrect: false },
+        { option: "Bark", isCorrect: true },
+        { option: "Meow", isCorrect: false },
+        { option: "Run", isCorrect: false }
+      ],
+      type: QuestionTypeLanguage.Match,
+      explanation: "'Bark' is the sound a dog makes, so it is the correct pair."
+    }
+  ]
 };

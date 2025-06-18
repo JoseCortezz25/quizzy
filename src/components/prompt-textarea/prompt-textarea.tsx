@@ -12,7 +12,6 @@ import { useState } from "react";
 import { Select } from "./select";
 
 
-
 export function PromptTextarea() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +48,12 @@ export function PromptTextarea() {
       onSubmit={handleSubmit}
       className="w-full max-w-(--breakpoint-md) rounded-2xl p-2 bg-brand-dark-600/20 border-none"
     >
-      <PromptInputTextarea placeholder="Ask me anything..." />
+      <PromptInputTextarea 
+        disableAutosize={true} 
+        placeholder="Define el tema, palabras clave y nivel de dificultad para tu quiz personalizado..."
+        className="min-h-[80px]" 
+      />
+      
       <PromptInputActions className="justify-end pt-2 ">
         <div className="w-full flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -70,13 +74,13 @@ export function PromptTextarea() {
           <Button
             variant="primary"
             size="icon"
-            className="h-8 w-8"
+            className="h-9 w-9 min-w-9 min-h-9"
             onClick={handleSubmit}
           >
             {isLoading ? (
-              <Square className="size-5 fill-current" />
+              <Square className="size-7 fill-current" />
             ) : (
-              <ArrowUp className="size-5" />
+              <ArrowUp className="size-7" />
             )}
           </Button>
         </PromptInputAction>

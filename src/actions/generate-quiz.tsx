@@ -2,68 +2,16 @@
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import type { Document } from '@langchain/core/documents';
-import type { GenerateQuiz, Options, QuizInstruction } from '@/lib/types';
+import type { GenerateQuiz, Options } from '@/lib/types';
 import { Languages, Models, QuestionType } from '@/lib/types';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
-import { createOpenAI } from '@ai-sdk/openai';
 import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { OpenAIEmbeddings } from "@langchain/openai";
-import { dictionaryQuestionType } from '@/lib/utils';
 import { AISDKExporter } from 'langsmith/vercel';
-import { ollama } from 'ollama-ai-provider';
-
-const generateSystemPrompt = ({
-  numberQuestions,
-  focus,
-  difficulty,
-  instruction,
-  docs,
-  questionType,
-  language
-}: QuizInstruction) => {
-  return `
-  Actua como un profesor experto con bastantes años de experiencia en cualquier tema.
-  Tu objetivo es crear un quiz con las siguientes características:
-  - Las preguntas deben ser sobre: ${instruction}
-  - ${numberQuestions} preguntas
-  - Enfocado en ${focus}
-  - Dificultad ${difficulty}
-  - Existen cuatro tipos de preguntas: Verdadero o Falso, selección múltiple con una sola respuesta, selección múltiple con múltiples respuestas. El tipo de pregunta debe ser: "${dictionaryQuestionType(questionType)}".
-  - Cuando el tipo de pregunta sea "Verdadero o Falso", las respuestas deben ser "Verdadero" o "Falso".
-  - Cuando el tipo de pregunta sea "Selección múltiple", las respuestas deben ser cuatro opciones y no debe tener la opción "Todas las anteriores".
-  - El quiz debe ser generado en el idioma "${language}".
-  Este es el contenido del PDF del cual se generan las preguntas:
-  "${docs}"
-  `;
-};
-
-
-const generateSystemPromptImage = ({
-  numberQuestions,
-  focus,
-  difficulty,
-  instruction,
-  questionType,
-  language
-}: QuizInstruction) => {
-  return `
-  Actua como un profesor experto con bastantes años de experiencia en cualquier tema.
-  Tu objetivo es crear un quiz con las siguientes características:
-  - Las preguntas deben ser sobre: ${instruction}
-  - ${numberQuestions} preguntas
-  - Enfocado en ${focus}
-  - Dificultad ${difficulty}
-  - Existen cuatro tipos de preguntas: Verdadero o Falso, selección múltiple con una sola respuesta, selección múltiple con múltiples respuestas. El tipo de pregunta debe ser: "${dictionaryQuestionType(questionType)}".
-  - Cuando el tipo de pregunta sea "Verdadero o Falso", las respuestas deben ser "Verdadero" o "Falso".
-  - Cuando el tipo de pregunta sea "Selección múltiple", las respuestas deben ser cuatro opciones y no debe tener la opción "Todas las anteriores".
-  - El contenido del cual debes basarte para crear el quiz debe ser la imagen suministrada por el usuario.
-  - El quiz debe ser generado en el idioma "${language}".
-  `;
-};
-
+import { generateSystemPrompt, generateSystemPromptImage } from '@/lib/ai/prompts';
+import { getModel } from '@/lib/utils';
 
 type GenerateQuizParams = {
   numberQuestions: number;
@@ -94,28 +42,6 @@ const getModelEmbeddings = (config: Options) => {
   return model;
 };
 
-const getModel = (config: Options) => {
-  if (
-    config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15
-    || config.model === Models.Gemini20Flash || config.model === Models.Gemini25ProExp
-  ) {
-    const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
-    const google = createGoogleGenerativeAI({ apiKey });
-    const model = google(config.model);
-    return model;
-  }
-
-  if (config.model === Models.DeepSeekR1) {
-    console.log("Using DeekSeek");
-
-    const model = ollama('deepseek-r1');
-    return model;
-  }
-
-  const openai = createOpenAI({ apiKey: config.apiKey });
-  const model = openai(`${config.model}`);
-  return model;
-};
 
 export const generateQuiz = async (
   data: FormData,

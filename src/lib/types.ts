@@ -31,6 +31,19 @@ export interface GenerateQuiz {
   title: string;
 }
 
+export interface GenerateLanguageQuiz {
+  questions: {
+    question: string;
+    options: {
+      option: string;
+      isCorrect: boolean;
+    }[];
+    type: QuestionTypeLanguage;
+    explanation: string;
+  }[];
+  title: string;
+}
+
 export enum Models {
   O1Preview = 'o1-preview',
   O1mini = 'o1-mini',
@@ -55,6 +68,14 @@ export enum QuestionType {
   MultipleChoice = 'multiple-choice',
   TrueOrFalse = 'true-or-false',
   OpenEnded = 'open-ended'
+}
+
+export enum QuestionTypeLanguage {
+  ReadAndRespond = 'Read text and responde based on the text between 1 and 3 responses',
+  Organize = 'Organize the words in the correct order',
+  FillInTheBlank = 'Fill in the blank with the correct word',
+  MultipleChoice = 'Contest the question with the correct answer',
+  Match = 'Match the correct pair of words'
 }
 
 export type UserAnswer = {
