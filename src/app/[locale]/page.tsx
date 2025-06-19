@@ -10,6 +10,10 @@ import { GenerateQuiz, QuizQuestion as QuizQuestions, UserAnswer } from '@/lib/t
 import { WelcomeModal } from '@/components/modals/welcome-modal';
 import { Navbar } from '@/components/navbar';
 import { ErrorModal } from '@/components/modals/error-modal';
+import WrittenAnswerQuiz from '@/components/sections/written-answer-quiz';
+import DragDropQuiz from '@/components/sections/drag-drop-quiz';
+
+
 
 export default function QuizApp() {
   const [step, setStep] = useState<'upload' | 'generate' | 'intro' | 'quiz' | 'results'>('upload');
@@ -21,6 +25,8 @@ export default function QuizApp() {
   const [quizCount, setQuizCount] = useState(0);
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [quizMode, setQuizMode] = useState<'multiple-choice' | 'written' | 'drag-drop'>('multiple-choice');
+
 
   useEffect(() => {
     const firstVisit = !localStorage.getItem('welcomeShown');
@@ -85,6 +91,48 @@ export default function QuizApp() {
     handleNextQuestion();
   };
 
+  const renderQuizComponent = () => {
+    switch (quizMode) {
+      case 'written':
+        return (
+          <WrittenAnswerQuiz
+            questions={questions}
+            currentQuestionIndex={currentQuestionIndex}
+            onAnswer={(answer: string, isCorrect: boolean) => handleQuestionAnswer(isCorrect ? 1 : 0, [answer])}
+            onNext={() => {/* lógica para siguiente pregunta */ }}
+            onPrevious={() => {/* lógica para pregunta anterior */ }}
+            title={title}
+          />
+        );
+      case 'drag-drop':
+        return (
+          <DragDropQuiz
+            questions={questions}
+            currentQuestionIndex={currentQuestionIndex}
+            onAnswer={(isCorrect: boolean, selectedWords: string[]) => handleQuestionAnswer(isCorrect ? 1 : 0, selectedWords)}
+            onNext={() => {/* lógica para siguiente pregunta */ }}
+            onPrevious={() => {/* lógica para pregunta anterior */ }}
+            title={title}
+          />
+        );
+      default:
+        return (
+          <QuizQuestion
+            title={title}
+            question={questions[currentQuestionIndex]}
+            questionNumber={currentQuestionIndex + 1}
+            totalQuestions={questions.length}
+            onAnswer={handleQuestionAnswer}
+            onNext={handleNextQuestion}
+            currentQuestionIndex={currentQuestionIndex}
+            setCurrentQuestionIndex={setCurrentQuestionIndex}
+            setStep={setStep}
+            onSkip={handleSkipQuestion}
+          />
+        );
+    }
+  };
+
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
       <div className="min-h-screen w-full bg-[#0A0E12] text-white">
@@ -107,22 +155,11 @@ export default function QuizApp() {
             <QuizIntro
               totalQuestions={questions.length}
               onStart={handleStartQuiz}
+              quizMode={quizMode}
+              onQuizModeChange={setQuizMode}
             />
           )}
-          {step === 'quiz' && (
-            <QuizQuestion
-              title={title}
-              question={questions[currentQuestionIndex]}
-              questionNumber={currentQuestionIndex + 1}
-              totalQuestions={questions.length}
-              onAnswer={handleQuestionAnswer}
-              onNext={handleNextQuestion}
-              currentQuestionIndex={currentQuestionIndex}
-              setCurrentQuestionIndex={setCurrentQuestionIndex}
-              setStep={setStep}
-              onSkip={handleSkipQuestion}
-            />
-          )}
+          {step === 'quiz' && renderQuizComponent()}
           {step === 'results' && (
             <QuizResults
               title={title}
@@ -136,3 +173,6 @@ export default function QuizApp() {
     </ThemeProvider>
   );
 }
+
+
+
