@@ -1,13 +1,13 @@
 export interface Question {
-  question: string
-  options: string[]
-  correctAnswer: number
+  question: string;
+  options: string[];
+  correctAnswer: number;
 }
 
 export type QuizInstruction = {
   numberQuestions: number;
-  focus: "general" | "tecnictal" | "theoretical";
-  difficulty: "easy" | "medium" | "hard" | "expert";
+  focus: 'general' | 'tecnictal' | 'theoretical';
+  difficulty: 'easy' | 'medium' | 'hard' | 'expert';
   questionType: QuestionType;
   instruction: string;
   docs?: string;
@@ -18,7 +18,7 @@ export interface QuizQuestion {
   question: string;
   options: string[];
   type: QuestionType;
-  answer: string | string[]; 
+  answer: string | string[];
   explanation: string;
 }
 
@@ -50,10 +50,11 @@ export interface Options {
 }
 
 export enum QuestionType {
+  TrueOrFalse = 'true-or-false',
   MultipleChoiceSingle = 'multiple-choice-single',
   MultipleChoice = 'multiple-choice',
-  TrueOrFalse = 'true-or-false',
-  OpenEnded = 'open-ended'
+  WrittenAnswer = 'written-answer',
+  DragDrop = 'drag-drop'
 }
 
 export type UserAnswer = {
@@ -61,9 +62,9 @@ export type UserAnswer = {
   question: string;
   isCorrect: boolean;
   selectedOptions: string[];
-}
+};
 
 export enum Languages {
   Spanish = 'Spanish',
-  English = 'English',
+  English = 'English'
 }

@@ -95,7 +95,7 @@ const getModelEmbeddings = (config: Options) => {
 
 const getModel = (config: Options) => {
   if (
-    config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15 
+    config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15
     || config.model === Models.Gemini20Flash || config.model === Models.Gemini25ProExp
   ) {
     const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
@@ -127,11 +127,10 @@ export const generateQuiz = async (
 
   try {
 
-    //Load the PDF file
+
     const loader = new PDFLoader(pdfFile);
     const docs = await loader.load();
 
-    // Split the documents into chunks
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 2000,
       chunkOverlap: 200
@@ -144,23 +143,22 @@ export const generateQuiz = async (
       apiKey: process.env.GOOGLE_GEMINI_API || ""
     };
 
-    // Embeddings
+
     const embeddings = getModelEmbeddings(config.isFree ? defaultModelEmbeddings : config);
 
-    // Vector Store
     const inMemoryVectorStore = await MemoryVectorStore.fromDocuments(
-      splitDocs, // Documents to embed
-      embeddings // Embeddings from the model
+      splitDocs,
+      embeddings
     );
 
-    // Obtain similarity search results
-    // Retrieve the documents
+
+
     const vectorStoreRetriever = inMemoryVectorStore.asRetriever({
       k: 2,
       searchType: "similarity"
     });
 
-    // Get the documents
+
     const retrievedDocuments: Document[] = await vectorStoreRetriever.invoke(`Busca información sobre ${instruction}`);
     const result = retrievedDocuments.map((doc) => doc.pageContent).join("\n");
 
@@ -208,7 +206,7 @@ export const generateQuiz = async (
     return { quiz: updatedQuiz, title: object.title };
   } catch (error) {
     console.error("ERROR", error);
-    
+
     throw new Error("Ha ocurrido un error generando el quiz");
   }
 };

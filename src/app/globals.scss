@@ -91,7 +91,6 @@
   @apply cursor-pointer flex gap-3 items-center w-full py-2;
 }
 
-// Questions
 .quiz-progressbar {
   @apply h-full bg-gradient-to-r from-[#00FF88] via-[#00FF88] to-[#0066FF] rounded;
 }
@@ -142,7 +141,7 @@
       @apply rounded-full;
     }
 
-    button[data-state="active"] {
+    button[data-state='active'] {
       @apply bg-[#00FF88] text-[#1A1F25] font-bold;
     }
   }
