@@ -1,0 +1,15 @@
+.option-button {
+  @apply border-none flex flex-col gap-2 bg-brand-dark-600/30 rounded-xl p-4 hover:bg-brand-dark-600/60 transition-colors w-full text-start min-h-[42px];
+}
+
+.option-button--selected {
+  @apply border-brand-dark-600/90 bg-brand-dark-600/90;
+}
+
+.option-button--correct {
+  @apply border-green-500 bg-green-50;
+}
+
+.option-button--incorrect {
+  @apply border-red-500 bg-red-50;
+}

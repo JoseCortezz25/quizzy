@@ -31,16 +31,80 @@ export interface GenerateQuiz {
   title: string;
 }
 
-export interface GenerateLanguageQuiz {
-  questions: {
-    question: string;
-    options: {
-      option: string;
-      isCorrect: boolean;
-    }[];
-    type: QuestionTypeLanguage;
-    explanation: string;
+export interface WordPair {
+  word: string;
+  translation: string;
+}
+
+export interface LanguageQuestionBase {
+  id: string;
+  question: string;
+  type: QuestionTypeLanguage;
+  explanation: string;
+}
+
+export interface OpenEndedQuestion extends LanguageQuestionBase {
+  type: QuestionTypeLanguage.OpenEnded;
+  expectedAnswer: string;
+}
+
+export interface MultipleChoiceSingleQuestion extends LanguageQuestionBase {
+  type: QuestionTypeLanguage.MultipleChoiceSingle;
+  options: {
+    option: string;
+    isCorrect: boolean;
   }[];
+}
+
+export interface MultipleChoiceMultipleQuestion extends LanguageQuestionBase {
+  type: QuestionTypeLanguage.MultipleChoiceMultiple;
+  options: {
+    option: string;
+    isCorrect: boolean;
+  }[];
+}
+
+export interface WordOrderQuestion extends LanguageQuestionBase {
+  type: QuestionTypeLanguage.WordOrder;
+  words: string[];
+  correctOrder: string[];
+}
+
+export interface WordMeaningQuestion extends LanguageQuestionBase {
+  type: QuestionTypeLanguage.WordMeaning;
+  sentence: string;
+  highlightedWord: string;
+  options: {
+    option: string;
+    isCorrect: boolean;
+  }[];
+}
+
+export interface WordMatchQuestion extends LanguageQuestionBase {
+  type: QuestionTypeLanguage.WordMatch;
+  pairs: WordPair[];
+}
+
+export interface ReadingComprehensionQuestion extends LanguageQuestionBase {
+  type: QuestionTypeLanguage.ReadingComprehension;
+  passage: string;
+  options: {
+    option: string;
+    isCorrect: boolean;
+  }[];
+}
+
+export type LanguageQuestion =
+  | OpenEndedQuestion
+  | MultipleChoiceSingleQuestion
+  | MultipleChoiceMultipleQuestion
+  | WordOrderQuestion
+  | WordMeaningQuestion
+  | WordMatchQuestion
+  | ReadingComprehensionQuestion;
+
+export interface GenerateLanguageQuiz {
+  questions: LanguageQuestion[];
   title: string;
 }
 
@@ -52,7 +116,7 @@ export enum Models {
   Gemini15ProLatest = 'gemini-1.5-pro-latest',
   GeminiFlash15 = 'gemini-1.5-flash-latest',
   DeepSeekR1 = 'deepseek-r1',
-  Gemini25ProExp = 'gemini-2.5-pro-exp-03-25',
+  Gemini25ProExp = 'gemini-2.5-pro',
   Gemini20Flash = 'gemini-2.0-flash-001'
 }
 
@@ -71,11 +135,13 @@ export enum QuestionType {
 }
 
 export enum QuestionTypeLanguage {
-  ReadAndRespond = 'Read text and responde based on the text between 1 and 3 responses',
-  Organize = 'Organize the words in the correct order',
-  FillInTheBlank = 'Fill in the blank with the correct word',
-  MultipleChoice = 'Contest the question with the correct answer',
-  Match = 'Match the correct pair of words'
+  OpenEnded = 'open-ended',
+  MultipleChoiceSingle = 'multiple-choice-single',
+  MultipleChoiceMultiple = 'multiple-choice-multiple',
+  WordOrder = 'word-order',
+  WordMeaning = 'word-meaning',
+  WordMatch = 'word-match',
+  ReadingComprehension = 'reading-comprehension'
 }
 
 export type UserAnswer = {
@@ -84,6 +150,52 @@ export type UserAnswer = {
   isCorrect: boolean;
   selectedOptions: string[];
 };
+
+export interface LanguageUserAnswerBase {
+  questionId: string;
+  type: QuestionTypeLanguage;
+  isCorrect: boolean;
+}
+
+export interface OpenEndedAnswer extends LanguageUserAnswerBase {
+  type: QuestionTypeLanguage.OpenEnded;
+  answer: string;
+}
+
+export interface MultipleChoiceAnswer extends LanguageUserAnswerBase {
+  type:
+    | QuestionTypeLanguage.MultipleChoiceSingle
+    | QuestionTypeLanguage.MultipleChoiceMultiple;
+  selectedOptions: string[];
+}
+
+export interface WordOrderAnswer extends LanguageUserAnswerBase {
+  type: QuestionTypeLanguage.WordOrder;
+  orderedWords: string[];
+}
+
+export interface WordMeaningAnswer extends LanguageUserAnswerBase {
+  type: QuestionTypeLanguage.WordMeaning;
+  selectedOption: string;
+}
+
+export interface WordMatchAnswer extends LanguageUserAnswerBase {
+  type: QuestionTypeLanguage.WordMatch;
+  matches: { word: string; translation: string }[];
+}
+
+export interface ReadingComprehensionAnswer extends LanguageUserAnswerBase {
+  type: QuestionTypeLanguage.ReadingComprehension;
+  selectedOption: string;
+}
+
+export type LanguageUserAnswer =
+  | OpenEndedAnswer
+  | MultipleChoiceAnswer
+  | WordOrderAnswer
+  | WordMeaningAnswer
+  | WordMatchAnswer
+  | ReadingComprehensionAnswer;
 
 export enum Languages {
   Spanish = 'Spanish',
