@@ -2,7 +2,7 @@
 import { ChangeEvent, DragEvent, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { FileUp, Check, File, OctagonXIcon, ImagePlusIcon } from 'lucide-react';
-import { FileType, usePDF } from '@/store/store';
+import { FileType, usePDF } from '@/stores/store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from 'next-intl';
 

@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
 import { GenerateQuiz, Languages, Models, Options, QuestionType } from '@/lib/types';
 import { generateQuiz, generateQuizBasedImage } from '@/actions/generate-quiz';
-import { FileType, usePDF } from '@/store/store';
+import { FileType, usePDF } from '@/stores/store';
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
 import { dictionaryQuestionType, cn, compressImage } from '@/lib/utils';

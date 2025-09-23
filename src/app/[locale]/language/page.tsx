@@ -8,7 +8,7 @@ import { GenerateLanguageQuiz, LanguageUserAnswer } from '@/lib/types';
 
 const Page = () => {
   const [currentQuiz, setCurrentQuiz] = useState<GenerateLanguageQuiz | null>(null);
-  /* eslint-disable-next-line */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [quizResults, setQuizResults] = useState<LanguageUserAnswer[] | null>(null);
 
   const suggestions = [
@@ -46,30 +46,23 @@ const Page = () => {
   };
 
   const handleRetryQuiz = () => {
-    // Reset quiz results but keep the current quiz
     setQuizResults(null);
   };
 
   const handleCreateNewQuiz = () => {
-    // Reset everything to start fresh
     setCurrentQuiz(null);
     setQuizResults(null);
   };
 
   const handleSuggestionClick = (prompt: string) => {
-    // This could trigger the quiz generator with the suggestion text
-    // For now, just log it
     console.log('Suggestion clicked:', prompt);
   };
-
 
   // Show quiz interface if a quiz is generated
   if (currentQuiz) {
     return (
       <div className="min-h-[calc(100vh-65px)] px-6 xl:px-0 py-6">
         <div className="max-w-4xl mx-auto">
-
-
           <LanguageQuizContainer
             questions={currentQuiz.questions}
             title={currentQuiz.title}
@@ -91,7 +84,7 @@ const Page = () => {
             Aprende idiomas con Quizzy
           </span>
           <h1 className="text-4xl md:text-[36px] font-bold">¿Qué quieres aprender hoy?</h1>
-          <p className="text-gray-600">
+          <p className="text-gray-200/60">
             Crea quizzes personalizados con diferentes tipos de ejercicios: preguntas abiertas,
             opción múltiple, ordenar palabras, emparejar traducciones y más.
           </p>

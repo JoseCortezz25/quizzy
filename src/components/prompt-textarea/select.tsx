@@ -14,7 +14,7 @@ export const Select = ({ options, value, onChange, placeholder, ...props }: Sele
   return (
     <SelectUI {...props} onValueChange={onChange} value={value}>
       <SelectTrigger className="w-[120px] rounded-xl border border-brand-dark-600/20 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0">
-        <SelectValue placeholder={placeholder} />
+        <SelectValue placeholder={placeholder} className="text-start" />
       </SelectTrigger>
       <SelectContent className="select-item__content">
         {options.map((option) => (

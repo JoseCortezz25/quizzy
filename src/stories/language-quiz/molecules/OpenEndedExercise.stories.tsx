@@ -11,27 +11,28 @@ const meta: Meta<typeof OpenEndedExercise> = {
     docs: {
       description: {
         component: `
-**OpenEndedExercise** permite a los usuarios escribir respuestas libres para preguntas de traducción, gramática o vocabulario.
+**OpenEndedExercise** es un componente molecular que renderiza un campo de texto libre para respuestas abiertas.
 
-### Características:
-- ✅ Auto-submit mientras el usuario escribe
-- ✅ Validación inmediata de respuestas
-- ✅ Feedback educativo con explicaciones
-- ✅ Soporte para respuestas de texto libre
+### Funcionalidad:
+- Campo de entrada de texto con placeholder configurable
+- Auto-submit cuando el usuario escribe una respuesta
+- Estado visual para entrada activa
+- Integración con el sistema de respuestas del usuario
 
 ### Casos de uso:
 - Ejercicios de traducción
 - Conjugación de verbos
 - Respuestas gramaticales
 - Definiciones de vocabulario
+
+**Nota:** Este componente solo maneja la interfaz y captura de respuestas. La validación y feedback se manejan en el componente padre.
         `
       }
     }
   },
   tags: ['autodocs'],
   argTypes: {
-    onAnswer: { action: 'answered' },
-    showResult: { control: 'boolean' }
+    onAnswer: { action: 'answered' }
   }
 };
 
@@ -73,31 +74,29 @@ export const WithUserInput: Story = {
   }
 };
 
-export const ShowingCorrectResult: Story = {
+export const WithUserAnswer: Story = {
   args: {
     question: baseQuestion,
-    userAnswer: 'Buenos días',
-    showResult: true
+    userAnswer: 'Buenos días'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Vista de resultado mostrando una respuesta correcta con la explicación.'
+        story: 'Campo con una respuesta del usuario ya ingresada.'
       }
     }
   }
 };
 
-export const ShowingIncorrectResult: Story = {
+export const WithDifferentAnswer: Story = {
   args: {
     question: baseQuestion,
-    userAnswer: 'Buenas mañanas',
-    showResult: true
+    userAnswer: 'Buenas mañanas'
   },
   parameters: {
     docs: {
       description: {
-        story: 'Vista de resultado mostrando una respuesta incorrecta comparada con la esperada.'
+        story: 'Campo mostrando una respuesta diferente ingresada por el usuario.'
       }
     }
   }
