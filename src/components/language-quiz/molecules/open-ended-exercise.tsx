@@ -33,7 +33,7 @@ export const OpenEndedExercise = ({
       <input
         value={answer}
         onChange={handleAnswerChange}
-        placeholder={question.placeholder || "Escribe tu respuesta aquí..."}
+        placeholder="Escribe tu respuesta aquí..."
         className="w-full bg-brand-dark-600/30 rounded-xl p-4 hover:bg-brand-dark-600/60 transition-colors"
       />
     </div>

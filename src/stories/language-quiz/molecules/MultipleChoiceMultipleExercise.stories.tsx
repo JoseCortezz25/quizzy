@@ -29,8 +29,7 @@ const meta: Meta<typeof MultipleChoiceMultipleExercise> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    onAnswer: { action: 'answered' },
-    showResult: { control: 'boolean' }
+    onAnswer: { action: 'answered' }
   }
 };
 
@@ -96,8 +95,7 @@ export const AllCorrectSelected: Story = {
 export const ShowingCorrectResult: Story = {
   args: {
     question: baseQuestion,
-    userAnswer: ['Run', 'Eat', 'Sleep'],
-    showResult: true
+    userAnswer: ['Run', 'Eat', 'Sleep']
   },
   parameters: {
     docs: {
@@ -111,8 +109,7 @@ export const ShowingCorrectResult: Story = {
 export const ShowingPartialResult: Story = {
   args: {
     question: baseQuestion,
-    userAnswer: ['Run', 'Beautiful', 'Happy'],
-    showResult: true
+    userAnswer: ['Run', 'Beautiful', 'Happy']
   },
   parameters: {
     docs: {

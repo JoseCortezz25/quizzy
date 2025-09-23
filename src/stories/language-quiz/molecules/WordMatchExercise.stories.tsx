@@ -29,8 +29,7 @@ const meta: Meta<typeof WordMatchExercise> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    onAnswer: { action: 'answered' },
-    showResult: { control: 'boolean' }
+    onAnswer: { action: 'answered' }
   }
 };
 
@@ -104,11 +103,8 @@ export const ShowingCorrectResult: Story = {
     question: baseQuestion,
     userAnswer: [
       { word: 'House', translation: 'Casa' },
-      { word: 'Car', translation: 'Coche' },
-      { word: 'Book', translation: 'Libro' },
-      { word: 'Water', translation: 'Agua' }
-    ],
-    showResult: true
+      { word: 'Car', translation: 'Coche' }
+    ]
   },
   parameters: {
     docs: {
@@ -127,8 +123,7 @@ export const ShowingMixedResult: Story = {
       { word: 'Car', translation: 'Casa' },    // Incorrect
       { word: 'Book', translation: 'Libro' },  // Correct
       { word: 'Water', translation: 'Agua' }  // Correct
-    ],
-    showResult: true
+    ]
   },
   parameters: {
     docs: {

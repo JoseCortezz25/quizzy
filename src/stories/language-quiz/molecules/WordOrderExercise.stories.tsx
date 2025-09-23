@@ -29,8 +29,7 @@ const meta: Meta<typeof WordOrderExercise> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    onAnswer: { action: 'answered' },
-    showResult: { control: 'boolean' }
+    onAnswer: { action: 'answered' }
   }
 };
 
@@ -90,8 +89,7 @@ export const CompletelyOrdered: Story = {
 export const ShowingCorrectResult: Story = {
   args: {
     question: baseQuestion,
-    userAnswer: ['The', 'cat', 'is', 'sleeping'],
-    showResult: true
+    userAnswer: ['The', 'cat', 'is', 'sleeping']
   },
   parameters: {
     docs: {
@@ -105,8 +103,7 @@ export const ShowingCorrectResult: Story = {
 export const ShowingIncorrectResult: Story = {
   args: {
     question: baseQuestion,
-    userAnswer: ['Cat', 'the', 'sleeping', 'is'],
-    showResult: true
+    userAnswer: ['Cat', 'the', 'sleeping', 'is']
   },
   parameters: {
     docs: {

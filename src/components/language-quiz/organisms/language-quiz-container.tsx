@@ -40,6 +40,20 @@ export const LanguageQuizContainer = ({
   onRetry,
   onNewQuiz
 }: LanguageQuizContainerProps) => {
+  // Helpers de tipos para estrechar uniones en tiempo de ejecución
+  const isStringArray = (value: unknown): value is string[] =>
+    Array.isArray(value) && value.every(v => typeof v === "string");
+
+  const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === "object" && value !== null;
+
+  const isWordMatchArray = (
+    value: unknown
+  ): value is { word: string; translation: string }[] =>
+    Array.isArray(value) &&
+    value.every(v =>
+      isRecord(v) && typeof v.word === "string" && typeof v.translation === "string"
+    );
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<LanguageUserAnswer[]>([]);
   const [showResults, setShowResults] = useState(false);
@@ -47,7 +61,9 @@ export const LanguageQuizContainer = ({
   const currentQuestion = questions[currentQuestionIndex];
   const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
 
-  const handleAnswer = (answer: string | string[]) => {
+  const handleAnswer = (
+    answer: string | string[] | { word: string; translation: string }[]
+  ) => {
     const newAnswer: LanguageUserAnswer = {
       questionId: currentQuestion.id,
       type: currentQuestion.type,
@@ -61,81 +77,86 @@ export const LanguageQuizContainer = ({
     });
   };
 
-  const checkAnswer = (question: LanguageQuestion, answer: string | string[]): boolean => {
+  const checkAnswer = (
+    question: LanguageQuestion,
+    answer: string | string[] | { word: string; translation: string }[]
+  ): boolean => {
     switch (question.type) {
       case QuestionTypeLanguage.OpenEnded:
         const openQ = question as OpenEndedQuestion;
-        return typeof answer === "string" && answer.toLowerCase().trim() === openQ.expectedAnswer.toLowerCase().trim();
+        return (
+          typeof answer === "string" &&
+          answer.toLowerCase().trim() === openQ.expectedAnswer.toLowerCase().trim()
+        );
 
       case QuestionTypeLanguage.MultipleChoiceSingle:
         const singleQ = question as MultipleChoiceSingleQuestion;
         const correctSingle = singleQ.options.find(opt => opt.isCorrect)?.option;
-        return answer[0] === correctSingle;
+        return isStringArray(answer) && answer[0] === correctSingle;
 
       case QuestionTypeLanguage.MultipleChoiceMultiple:
         const multiQ = question as MultipleChoiceMultipleQuestion;
         const correctMultiple = multiQ.options.filter(opt => opt.isCorrect).map(opt => opt.option);
-        return answer.length === correctMultiple.length && Array.isArray(answer) && answer.every((ans: string) => correctMultiple.includes(ans));
+        return (
+          isStringArray(answer) &&
+          answer.length === correctMultiple.length &&
+          answer.every(ans => correctMultiple.includes(ans))
+        );
 
       case QuestionTypeLanguage.WordOrder:
         const orderQ = question as WordOrderQuestion;
-        return JSON.stringify(answer) === JSON.stringify(orderQ.correctOrder);
+        return isStringArray(answer) && JSON.stringify(answer) === JSON.stringify(orderQ.correctOrder);
 
       case QuestionTypeLanguage.WordMeaning:
         const meaningQ = question as WordMeaningQuestion;
         const correctMeaning = meaningQ.options.find(opt => opt.isCorrect)?.option;
-        return answer === correctMeaning;
+        return typeof answer === "string" && answer === correctMeaning;
 
       case QuestionTypeLanguage.WordMatch:
         const matchQ = question as WordMatchQuestion;
-        if (!Array.isArray(answer)) return false;
+        if (!isWordMatchArray(answer)) return false;
         if (answer.length !== matchQ.pairs.length) return false;
         // Comprobar que cada par de respuesta coincide exactamente con un par esperado (sin importar el orden)
         const allMatched = matchQ.pairs.every(pair =>
-          answer.some(
-            (match: { word: string; translation: string }) =>
-              match &&
-              typeof match.word === "string" &&
-              typeof match.translation === "string" &&
-              match.word === pair.word &&
-              match.translation === pair.translation
-          )
+          answer.some(match => match.word === pair.word && match.translation === pair.translation)
         );
         // Además, asegurarse que no hay pares extra en la respuesta
-        const noExtra = answer.every(
-          (match: { word: string; translation: string }) =>
-            matchQ.pairs.some(
-              pair =>
-                pair.word === match.word &&
-                pair.translation === match.translation
-            )
+        const noExtra = answer.every(match =>
+          matchQ.pairs.some(pair => pair.word === match.word && pair.translation === match.translation)
         );
         return allMatched && noExtra;
 
       case QuestionTypeLanguage.ReadingComprehension:
         const readingQ = question as ReadingComprehensionQuestion;
         const correctReading = readingQ.options.find(opt => opt.isCorrect)?.option;
-        return answer === correctReading;
+        return typeof answer === "string" && answer === correctReading;
 
       default:
         return false;
     }
   };
 
-  const getAnswerByType = (type: QuestionTypeLanguage, answer: string | string[]) => {
+  const getAnswerByType = (
+    type: QuestionTypeLanguage,
+    answer: string | string[] | { word: string; translation: string }[]
+  ) => {
     switch (type) {
       case QuestionTypeLanguage.OpenEnded:
-        return { answer };
+        return { answer: typeof answer === "string" ? answer : "" };
       case QuestionTypeLanguage.MultipleChoiceSingle:
       case QuestionTypeLanguage.MultipleChoiceMultiple:
-        return { selectedOptions: Array.isArray(answer) ? answer : [answer] };
+        return { selectedOptions: isStringArray(answer) ? answer : typeof answer === "string" ? [answer] : [] };
       case QuestionTypeLanguage.WordOrder:
-        return { orderedWords: answer };
+        return { orderedWords: isStringArray(answer) ? answer : [] };
       case QuestionTypeLanguage.WordMeaning:
       case QuestionTypeLanguage.ReadingComprehension:
-        return { selectedOption: answer };
+        return { selectedOption: typeof answer === "string" ? answer : "" };
       case QuestionTypeLanguage.WordMatch:
-        return { matches: Array.isArray(answer) ? answer : [answer] };
+        return {
+          matches: isWordMatchArray(answer)
+            ? answer
+            : []
+        };
       default:
         return {};
     }
@@ -150,7 +171,6 @@ export const LanguageQuizContainer = ({
           <OpenEndedExercise
             question={currentQuestion as OpenEndedQuestion}
             onAnswer={handleAnswer}
-            showResult={showResults}
             userAnswer={currentAnswer?.type === QuestionTypeLanguage.OpenEnded ? currentAnswer.answer : undefined}
           />
         );
@@ -160,7 +180,6 @@ export const LanguageQuizContainer = ({
           <MultipleChoiceSingleExercise
             question={currentQuestion as MultipleChoiceSingleQuestion}
             onAnswer={handleAnswer}
-            showResult={showResults}
             userAnswer={currentAnswer?.type === QuestionTypeLanguage.MultipleChoiceSingle ? currentAnswer.selectedOptions : undefined}
           />
         );
@@ -170,7 +189,6 @@ export const LanguageQuizContainer = ({
           <MultipleChoiceMultipleExercise
             question={currentQuestion as MultipleChoiceMultipleQuestion}
             onAnswer={handleAnswer}
-            showResult={showResults}
             userAnswer={currentAnswer?.type === QuestionTypeLanguage.MultipleChoiceMultiple ? currentAnswer.selectedOptions : undefined}
           />
         );
@@ -180,7 +198,6 @@ export const LanguageQuizContainer = ({
           <WordOrderExercise
             question={currentQuestion as WordOrderQuestion}
             onAnswer={handleAnswer}
-            showResult={showResults}
             userAnswer={currentAnswer?.type === QuestionTypeLanguage.WordOrder ? currentAnswer.orderedWords : undefined}
           />
         );
@@ -190,7 +207,6 @@ export const LanguageQuizContainer = ({
           <WordMeaningExercise
             question={currentQuestion as WordMeaningQuestion}
             onAnswer={handleAnswer}
-            showResult={showResults}
             userAnswer={currentAnswer?.type === QuestionTypeLanguage.WordMeaning ? currentAnswer.selectedOption : undefined}
           />
         );
@@ -199,8 +215,7 @@ export const LanguageQuizContainer = ({
         return (
           <WordMatchExercise
             question={currentQuestion as WordMatchQuestion}
-            onAnswer={handleAnswer}
-            showResult={showResults}
+            onAnswer={(matches) => handleAnswer(matches)}
             userAnswer={currentAnswer?.type === QuestionTypeLanguage.WordMatch ? currentAnswer.matches : undefined}
           />
         );
@@ -210,7 +225,6 @@ export const LanguageQuizContainer = ({
           <ReadingComprehensionExercise
             question={currentQuestion as ReadingComprehensionQuestion}
             onAnswer={handleAnswer}
-            showResult={showResults}
             userAnswer={currentAnswer?.type === QuestionTypeLanguage.ReadingComprehension ? currentAnswer.selectedOption : undefined}
           />
         );

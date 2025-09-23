@@ -29,8 +29,7 @@ const meta: Meta<typeof WordMeaningExercise> = {
   },
   tags: ['autodocs'],
   argTypes: {
-    onAnswer: { action: 'answered' },
-    showResult: { control: 'boolean' }
+    onAnswer: { action: 'answered' }
   }
 };
 
@@ -82,8 +81,7 @@ export const WithSelectedAnswer: Story = {
 export const ShowingCorrectResult: Story = {
   args: {
     question: baseQuestion,
-    userAnswer: 'Enorme',
-    showResult: true
+    userAnswer: 'Enorme'
   },
   parameters: {
     docs: {
@@ -97,8 +95,7 @@ export const ShowingCorrectResult: Story = {
 export const ShowingIncorrectResult: Story = {
   args: {
     question: baseQuestion,
-    userAnswer: 'Pequeña',
-    showResult: true
+    userAnswer: 'Pequeña'
   },
   parameters: {
     docs: {

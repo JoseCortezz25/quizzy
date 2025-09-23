@@ -11,11 +11,7 @@ const meta: Meta<typeof OptionButton> = {
   tags: ['autodocs'],
   argTypes: {
     onClick: { action: 'clicked' },
-    selected: { control: 'boolean' },
-    correct: { control: 'boolean' },
-    incorrect: { control: 'boolean' },
-    disabled: { control: 'boolean' },
-    className: { control: 'text' }
+    selected: { control: 'boolean' }
   }
 };
 
@@ -37,22 +33,19 @@ export const Selected: Story = {
 
 export const Correct: Story = {
   args: {
-    children: 'Hola',
-    correct: true
+    children: 'Hola'
   }
 };
 
 export const Incorrect: Story = {
   args: {
-    children: 'Hello',
-    incorrect: true
+    children: 'Hello'
   }
 };
 
 export const Disabled: Story = {
   args: {
-    children: 'Bonjour',
-    disabled: true
+    children: 'Bonjour'
   }
 };
 
@@ -70,9 +63,9 @@ export const InteractiveStates: Story = {
       <div className="space-y-3">
         <OptionButton onClick={handleClick}>Estado Normal</OptionButton>
         <OptionButton onClick={handleClick} selected>Estado Seleccionado</OptionButton>
-        <OptionButton onClick={handleClick} correct>Respuesta Correcta</OptionButton>
-        <OptionButton onClick={handleClick} incorrect>Respuesta Incorrecta</OptionButton>
-        <OptionButton disabled>Estado Deshabilitado</OptionButton>
+        <OptionButton onClick={handleClick}>Respuesta Correcta</OptionButton>
+        <OptionButton onClick={handleClick}>Respuesta Incorrecta</OptionButton>
+        <OptionButton onClick={handleClick}>Estado Deshabilitado</OptionButton>
       </div>
     );
   }
