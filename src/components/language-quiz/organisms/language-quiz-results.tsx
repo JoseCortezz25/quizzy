@@ -6,6 +6,7 @@ import { LanguageQuestion, LanguageUserAnswer, MultipleChoiceMultipleQuestion, M
 import JSConfetti from 'js-confetti';
 import { useEffect } from 'react';
 import { cn } from '@/lib/utils';
+import { XformerlyTwitter } from '../atoms/icons';
 
 interface LanguageQuizResultsProps {
   questions: LanguageQuestion[];
@@ -26,12 +27,14 @@ export const LanguageQuizResults = ({
   const percentage = ((rightAnswers / questions.length) * 100).toFixed(1);
 
   const canvas = document.querySelector('#language-quiz-results') as HTMLCanvasElement;
-  const jsConfetti = new JSConfetti({ canvas });
 
   const showConfetti = () => {
-    jsConfetti.addConfetti({
-      emojis: ['🎉', '🎊', '🎈', '🥳', '👏', '🌟', '✨']
-    });
+    const jsConfetti = new JSConfetti({ canvas });
+    if (jsConfetti) {
+      jsConfetti.addConfetti({
+        emojis: ['🎉', '🎊', '🎈', '🥳', '👏', '🌟', '✨']
+      });
+    }
   };
 
   const shareOnTwitter = () => {
@@ -47,15 +50,6 @@ Obtuve ${rightAnswers} respuestas correctas de ${questions.length} preguntas en 
     const twitterUrl = `${url}?text=${encodeURIComponent(text)}&hashtags=${hashtags}&via=${via}`;
     window.open(twitterUrl, '_blank');
   };
-
-  // const getPerformanceMessage = () => {
-  //   const score = parseFloat(percentage);
-  //   if (score >= 90) return { message: "¡Excelente! 🌟", color: "text-green-500" };
-  //   if (score >= 80) return { message: "¡Muy bien! 👏", color: "text-green-400" };
-  //   if (score >= 70) return { message: "¡Buen trabajo! 👍", color: "text-yellow-500" };
-  //   if (score >= 60) return { message: "Puedes mejorar 💪", color: "text-orange-500" };
-  //   return { message: "Sigue practicando 📚", color: "text-red-500" };
-  // };
 
   const getExerciseTypeLabel = (type: QuestionTypeLanguage) => {
     switch (type) {
@@ -217,17 +211,8 @@ Obtuve ${rightAnswers} respuestas correctas de ${questions.length} preguntas en 
     }
   }, []);
 
-  // const performanceMessage = getPerformanceMessage();
-
   return (
     <div className="max-w-4xl mx-auto pt-4 mb-14 sm:mb-0" id="language-quiz-results">
-      {/* Header */}
-      {/* <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-200 mb-2">
-          Resultados del Quiz
-        </h1>
-        <h2 className="text-xl text-gray-300">{title}</h2>
-      </div> */}
 
       {/* Performance Summary */}
       <div className="mb-12">
@@ -268,7 +253,7 @@ Obtuve ${rightAnswers} respuestas correctas de ${questions.length} preguntas en 
             if (questionsOfType.length === 0) return null;
 
             return (
-              <div key={type} className="bg-gray-800 rounded-lg p-4">
+              <div key={type} className="bg-brand-dark-600/20 rounded-lg p-4">
                 <h4 className="text-sm font-medium text-gray-300 mb-2">
                   {getExerciseTypeLabel(type)}
                 </h4>
@@ -297,28 +282,28 @@ Obtuve ${rightAnswers} respuestas correctas de ${questions.length} preguntas en 
           const isCorrect = userAnswer.isCorrect;
 
           return (
-            <div key={question.id} className="bg-gray-800 rounded-lg p-6">
+            <div key={question.id} className="bg-brand-dark-600/20 rounded-lg p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-sm bg-gray-700 text-gray-300 px-2 py-1 rounded">
+                    <span className="text-sm bg-brand-dark-600/60 text-gray-300 size-[40px] flex items-center justify-center font-bold rounded-xl">
                       {index + 1}
                     </span>
-                    <span className="text-xs bg-blue-900 text-blue-200 px-2 py-1 rounded">
+                    <span className="text-sm text-blue-200 px-2 py-1 rounded">
                       {getExerciseTypeLabel(question.type)}
                     </span>
                   </div>
-                  <h4 className="text-gray-200 font-medium mb-3">{question.question}</h4>
+                  <h4 className="text-gray-200 font-medium text-lg mb-3">{question.question}</h4>
 
                   {/* Show additional context for specific question types */}
                   {question.type === QuestionTypeLanguage.WordMeaning && 'sentence' in question && (
-                    <div className="mb-3 p-3 bg-blue-900/20 rounded border border-blue-800">
+                    <div className="mb-3 p-3 bg-brand-dark-600/60 rounded border border-brand-dark-600/80">
                       <p className="text-blue-200">{(question as WordMeaningQuestion).sentence}</p>
                     </div>
                   )}
 
                   {question.type === QuestionTypeLanguage.ReadingComprehension && 'passage' in question && (
-                    <div className="mb-3 p-3 bg-blue-900/20 rounded border border-blue-800">
+                    <div className="mb-3 p-3 bg-brand-dark-600/60 rounded border border-brand-dark-600/80">
                       <p className="text-blue-200 text-sm">{(question as ReadingComprehensionQuestion).passage}</p>
                     </div>
                   )}
@@ -341,7 +326,7 @@ Obtuve ${rightAnswers} respuestas correctas de ${questions.length} preguntas en 
                     <Sparkles className="w-4 h-4" />
                     Ver explicación
                   </summary>
-                  <div className="mt-2 p-3 bg-gray-700 rounded border border-gray-600">
+                  <div className="mt-2 p-3 rounded border border-gray-600">
                     <p className="text-gray-300 text-sm">{question.explanation}</p>
                   </div>
                 </details>
@@ -355,24 +340,24 @@ Obtuve ${rightAnswers} respuestas correctas de ${questions.length} preguntas en 
       <div className="flex flex-col sm:flex-row gap-4 justify-between">
         <div className="flex flex-col sm:flex-row gap-2">
           <Button
-            variant="outline"
-            className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            variant="secondary"
             onClick={onRetry}
           >
             <RotateCcw className="w-4 h-4 mr-2" />
             Intentar de Nuevo
           </Button>
           <Button
-            variant="outline"
-            className="border-gray-600 text-gray-300 hover:bg-gray-700"
+            variant="secondary"
+            className="text-[#000]"
             onClick={shareOnTwitter}
           >
-            Compartir Resultados
+            <XformerlyTwitter className="w-4 h-4 mr-2" />
+            Compartir en X
           </Button>
         </div>
 
         <Button
-          className="bg-brand-green-600 text-white hover:bg-brand-green-700"
+          variant="primary"
           onClick={onNewQuiz}
         >
           Crear Nuevo Quiz
