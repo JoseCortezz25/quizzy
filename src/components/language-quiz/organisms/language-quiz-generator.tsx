@@ -37,14 +37,14 @@ export function LanguageQuizGenerator({ onQuizGenerated }: LanguageQuizGenerator
         model: Models.Gemini20Flash,
         apiKey: process.env.GOOGLE_GEMINI_API || "",
         isFree: true,
-        language: Languages.Spanish
+        language: Languages.English
       };
 
 
       const quiz = await generateLanguageQuiz(
         input.trim(),
         level,
-        Languages.Spanish, // Could be made configurable
+        Languages.English, // Could be made configurable
         config
       );
 
