@@ -4,12 +4,14 @@ import { useState } from 'react';
 import { Suggestion } from '@/components/prompt-textarea/suggestion';
 import { LanguageQuizGenerator } from '@/components/language-quiz/organisms/language-quiz-generator';
 import { LanguageQuizContainer } from '@/components/language-quiz/organisms/language-quiz-container';
+import QuizIntro from '@/components/sections/quiz-intro';
 import { GenerateLanguageQuiz, LanguageUserAnswer } from '@/lib/types';
 
 const Page = () => {
   const [currentQuiz, setCurrentQuiz] = useState<GenerateLanguageQuiz | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [quizResults, setQuizResults] = useState<LanguageUserAnswer[] | null>(null);
+  const [quizStarted, setQuizStarted] = useState(false);
 
   const suggestions = [
     {
@@ -39,6 +41,7 @@ const Page = () => {
   const handleQuizGenerated = (quiz: GenerateLanguageQuiz) => {
     setCurrentQuiz(quiz);
     setQuizResults(null);
+    setQuizStarted(false);
   };
 
   const handleQuizComplete = (answers: LanguageUserAnswer[]) => {
@@ -52,14 +55,28 @@ const Page = () => {
   const handleCreateNewQuiz = () => {
     setCurrentQuiz(null);
     setQuizResults(null);
+    setQuizStarted(false);
   };
 
   const handleSuggestionClick = (prompt: string) => {
     console.log('Suggestion clicked:', prompt);
   };
 
-  // Show quiz interface if a quiz is generated
+  // Show intro or quiz interface if a quiz is generated
   if (currentQuiz) {
+    if (!quizStarted) {
+      return (
+        <div className="min-h-[calc(100vh-65px)] px-6 xl:px-0 py-6">
+          <div className="max-w-4xl mx-auto">
+            <QuizIntro
+              totalQuestions={10}
+              onStart={() => setQuizStarted(true)}
+            />
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-[calc(100vh-65px)] px-6 xl:px-0 py-6">
         <div className="max-w-4xl mx-auto">
