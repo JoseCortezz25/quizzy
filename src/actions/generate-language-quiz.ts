@@ -20,11 +20,6 @@ export const generateLanguageQuiz = async (
     throw new Error('This model is not supported for this action');
   }
 
-  console.log('userRequest', userRequest);
-  console.log('level', level);
-  console.log('language', language);
-  console.log('config', config);
-
   const systemPrompt = generateSystemPromptLanguage(
     userRequest,
     level,
@@ -36,20 +31,13 @@ export const generateLanguageQuiz = async (
     apiKey: process.env.GOOGLE_GEMINI_API || ''
   };
 
-  console.log('defaultModel', defaultModel);
   const model = config.isFree ? getModel(defaultModel) : getModel(config);
-
-  console.log('model', model);
 
   const { object } = await generateObject({
     model: model,
-    prompt:
-      'Genera un quiz educativo variado y dinamico con diferentes tipos de ejercicios para maximizar el aprendizaje del usuario. Especificamente para el nivel de idioma: ' +
-      level +
-      ' y el idioma: ' +
-      language +
-      ' y el tema: ' +
-      userRequest,
+    prompt: `Genera un quiz educativo variado y dinamico con diferentes tipos de ejercicios para maximizar el aprendizaje del usuario. 
+    Especificamente para el nivel de idioma: ${level} y el idioma: ${language} y el tema: ${userRequest}.
+    El quiz debe estar en ${language}. Todas las preguntas y respuestas deben estar en ${language}.`,
     schema: quizSchema,
     system: systemPrompt
   });
