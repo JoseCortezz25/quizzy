@@ -2,7 +2,7 @@
 import { ChangeEvent, DragEvent, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { FileUp, Check, File, OctagonXIcon, ImagePlusIcon } from 'lucide-react';
-import { FileType, usePDF } from '@/store/store';
+import { FileType, usePDF } from '@/stores/store';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTranslations } from 'next-intl';
 
@@ -89,8 +89,8 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
   const LimitReached = () => {
     return (
       <div className="flex flex-col items-center">
-        <OctagonXIcon className="w-16 h-16 text-[#00FF88] mb-4" />
-        <p className="text-[#00FF88] font-semibold mb-4 w-[60%] text-center">
+        <OctagonXIcon className="w-16 h-16 text-brand-green-600 mb-4" />
+        <p className="text-brand-green-600 font-semibold mb-4 w-[60%] text-center">
           {t('mainContent.limit')}
         </p>
       </div>
@@ -100,11 +100,11 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
   const UploadPDF = () => {
     return (
       <div className="flex flex-col items-center">
-        <Check className="w-16 h-16 text-[#00FF88] mb-4" />
-        <p className="text-[#00FF88] font-semibold mb-4">{t('mainContent.file.title')}</p>
+        <Check className="w-16 h-16 text-brand-green-600 mb-4" />
+        <p className="text-brand-green-600 font-semibold mb-4">{t('mainContent.file.title')}</p>
         <Button
           onClick={onUpload}
-          className="bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
+          variant="primary"
         >
           {t('mainContent.file.cta')}
         </Button>
@@ -121,17 +121,13 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
       >
         <div
           id="uploadArea"
-          className="border-2 border-dashed border-gray-700 rounded-lg p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-[#00FF88]/50 transition-colors"
+          className="border-2 border-dashed border-gray-700 rounded-lg p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-brand-green-600/50 transition-colors"
           onClick={handleUpload}
         >
           {fileNames.length > 0 ? (
-            <div className="flex flex-col gap-2 w-full">
-              {fileNames.map((fileName, index) => (
-                <div key={index} className="flex gap-4 items-center">
-                  <File className="size-6 text-[#00FF88]" />
-                  <p className="text-gray-400 text-start text-sm">{fileName}</p>
-                </div>
-              ))}
+            <div className="flex gap-4">
+              <File className="size-10 text-brand-green-600 mb-2" />
+              <p className="text-gray-400 text-start">{fileNames.join(', ')}</p>
             </div>
           ) : (
             <p className="text-gray-400">
@@ -153,7 +149,8 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
         <Button
           onClick={handleUpload}
           disabled={isUploading}
-          className="w-full bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
+          className="w-full"
+          variant="primary"
         >
           {isUploading ? t('mainContent.file.submiting') : `${t('mainContent.file.submit')} ${activeTab === FileType.PDF ? t('mainContent.file.pdf') : t('mainContent.file.image')}`}
         </Button>
@@ -162,7 +159,7 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0E12] text-white flex flex-col">
+    <div className="min-h-screen bg-brand-dark-800 text-white flex flex-col">
       {/* Main content */}
       <main className="flex-grow flex items-center">
         <div className="mx-auto py-12 grid grid-cols-1 md:grid-cols-2 gap-16">
@@ -175,22 +172,22 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
             </p>
             <ul className="space-y-2">
               <li className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-[#00FF88]" />
+                <Check className="w-5 h-5 text-brand-green-600" />
                 <span>{t('mainContent.features.aiQuestions')}</span>
               </li>
               <li className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-[#00FF88]" />
+                <Check className="w-5 h-5 text-brand-green-600" />
                 <span>{t('mainContent.features.tailoredContent')}</span>
               </li>
               <li className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-[#00FF88]" />
+                <Check className="w-5 h-5 text-brand-green-600" />
                 <span>{t('mainContent.features.instantFeedback')}</span>
               </li>
             </ul>
           </div>
 
           {/* Right column - PDF upload */}
-          <div className="bg-[#1A1F25] rounded-lg p-8 flex flex-col items-center justify-center md:max-w-[95%]">
+          <div className="bg-brand-green-950 rounded-lg p-8 flex flex-col items-center justify-center md:max-w-[95%]">
             <Tabs
               defaultValue={FileType.PDF}
               className="file-tabs"
@@ -206,8 +203,8 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
               <TabsContent value={FileType.PDF}>
                 <section className="w-full">
                   <div className="flex gap-4 mt-5 flex-col items-center sm:items-start sm:flex-row">
-                    <div className="min-w-20 min-h-20 w-20 h-20 rounded-full bg-[#00FF88]/10 flex items-center justify-center mb-6">
-                      <FileUp className="w-10 h-10 text-[#00FF88]" />
+                    <div className="min-w-20 min-h-20 w-20 h-20 rounded-full bg-brand-green-800 flex items-center justify-center mb-6">
+                      <FileUp className="w-10 h-10 text-brand-green-600" />
                     </div>
                     <div className="flex flex-col items-center sm:items-start">
                       <h2 className="text-2xl font-bold">{t('mainContent.file.headline')} {t('mainContent.file.pdf')}</h2>
@@ -225,8 +222,8 @@ export default function PDFUploader({ onUpload }: PDFUploaderProps) {
               <TabsContent value={FileType.IMAGE}>
                 <section className="w-full">
                   <div className="flex gap-4 mt-5 flex-col items-center sm:items-start sm:flex-row">
-                    <div className="min-w-20 min-h-20 w-20 h-20 rounded-full bg-[#00FF88]/10 flex items-center justify-center mb-6">
-                      <ImagePlusIcon className="w-10 h-10 text-[#00FF88]" />
+                    <div className="min-w-20 min-h-20 w-20 h-20 rounded-full bg-brand-green-600/10 flex items-center justify-center mb-6">
+                      <ImagePlusIcon className="w-10 h-10 text-brand-green-600" />
                     </div>
                     <div className="flex flex-col items-center sm:items-start">
                       <h2 className="text-2xl font-bold">{t('mainContent.file.headline')} {t('mainContent.file.image')}</h2>

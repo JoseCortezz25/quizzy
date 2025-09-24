@@ -57,19 +57,23 @@ const Settings = () => {
           <p>
             {t('settings.description-one')}
           </p>
-          <Select onValueChange={(e) => setModel(e)} defaultValue={model}>
-            <SelectTrigger className="w-full">
+
+          <Select
+            onValueChange={(e) => setModel(e)}
+            defaultValue={model}
+          >
+            <SelectTrigger className="select-item__trigger">
               <SelectValue placeholder="Seleccionar el modelo" />
             </SelectTrigger>
 
-            <SelectContent>
-              <SelectItem value={Models.GPT4o} className="w-full cursor-pointer">
+            <SelectContent className="select-item__content">
+              <SelectItem value={Models.GPT4o} className="select-item__model">
                 <div className="select-item">
                   <OpenAI className="text-black dark:text-white" />
                   <p>OpenAI - GPT-4o</p>
                 </div>
               </SelectItem>
-              <SelectItem value={Models.GPT4oMini} className="w-full cursor-pointer">
+              <SelectItem value={Models.GPT4oMini} className="select-item__model">
                 <div className="select-item">
                   <OpenAI className="text-black dark:text-white" />
                   <span className="flex gap-2 items-center">
@@ -77,25 +81,25 @@ const Settings = () => {
                   </span>
                 </div>
               </SelectItem>
-              <SelectItem value={Models.Gemini25ProExp} className="w-full cursor-pointer">
+              <SelectItem value={Models.Gemini25ProExp} className="select-item__model">
                 <div className="select-item">
                   <Google />
                   <p>Google - Gemini 2.5 Pro Exp <span className="text-[11px] bg-[#00FF88] text-[#1A1F25] rounded-full px-2 py-1">New</span></p>
                 </div>
               </SelectItem>
-              <SelectItem value={Models.Gemini20Flash} className="w-full cursor-pointer">
+              <SelectItem value={Models.Gemini20Flash} className="select-item__model">
                 <div className="select-item">
                   <Google />
                   <p>Google - Gemini 2.0 Flash <span className="text-[11px] bg-[#00FF88] text-[#1A1F25] rounded-full px-2 py-1">New</span></p>
                 </div>
               </SelectItem>
-              <SelectItem value={Models.Gemini15ProLatest} className="w-full cursor-pointer">
+              <SelectItem value={Models.Gemini15ProLatest} className="select-item__model">
                 <div className="select-item">
                   <Google />
                   <p>Google - Gemini Pro 1.5</p>
                 </div>
               </SelectItem>
-              <SelectItem value={Models.GeminiFlash15} className="w-full cursor-pointer">
+              <SelectItem value={Models.GeminiFlash15} className="select-item__model">
                 <div className="select-item">
                   <Google />
                   <p>Google - Gemini Flash 1.5</p>
@@ -117,7 +121,7 @@ const Settings = () => {
               type={isShowAPiKey ? "text" : "password"}
               onChange={(e) => setApiKey(e.target.value)}
               defaultValue={apiKey}
-              className="pr-12"
+              className="pr-12 bg-brand-dark-800 border border-brand-green-950"
             />
             <Button
               variant="ghost"
@@ -134,7 +138,11 @@ const Settings = () => {
           </div>
         </div>
 
-        <Button className="w-full" type="submit">
+        <Button
+          className="w-full mt-4"
+          variant="secondary"
+          type="submit"
+        >
           {t('settings.cta')}
         </Button>
       </form>

@@ -18,12 +18,12 @@ const SheetSettings = ({ ...props }: SheetSettingsProps) => {
           asChild
           variant="ghost"
           size="icon"
-          className="dark:hover:bg-[#20352F] p-2"
+          className="dark:hover:bg-brand-green-900 p-2"
         >
           <SettingsIcon className="size-8" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="overflow-y-scroll bg-[#0A0E12]">
+      <SheetContent className="sheet-settings">
         <SheetHeader className="text-start">
           <SheetTitle className="font-bold text-[19px]">{t('settings.title')}</SheetTitle>
           <SheetDescription className="text-[15px]">
@@ -32,7 +32,6 @@ const SheetSettings = ({ ...props }: SheetSettingsProps) => {
         </SheetHeader>
         <div className="w-full h-[85dvh] flex flex-col justify-between">
           <Settings />
-
           <p className="text-center text-muted-foreground text-[14px] mt-4">{t('settings.created')} {' '}
             <a href="https://github.com/JoseCortezz25" target="_blank" rel="noopener noreferrer">
               <strong>@JoseCortezz25</strong>

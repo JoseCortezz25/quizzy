@@ -13,8 +13,8 @@ export default function QuizIntro({ totalQuestions, onStart }: QuizIntroProps) {
   return (
     <div className="max-w-2xl mx-auto pt-20">
       <div className="flex flex-col items-center mb-8">
-        <div className="w-16 h-16 rounded-full bg-[#00FF88]/10 flex items-center justify-center mb-6">
-          <Brain className="w-8 h-8 text-[#00FF88]" />
+        <div className="w-16 h-16 rounded-full bg-brand-green-600/10 flex items-center justify-center mb-6">
+          <Brain className="w-8 h-8 text-brand-green-600" />
         </div>
         <h1 className="text-3xl font-bold text-center mb-2">{t('title')}</h1>
         <p className="text-gray-400 text-center">
@@ -22,22 +22,22 @@ export default function QuizIntro({ totalQuestions, onStart }: QuizIntroProps) {
         </p>
       </div>
 
-      <div className="bg-[#1A1F25] rounded-lg p-6 mb-8">
+      <div className="bg-brand-green-950 rounded-lg p-6 mb-8">
         <ul className="space-y-3">
           <li className="flex items-center">
-            <span className="w-2 h-2 bg-[#00FF88] rounded-full mr-3"></span>
+            <span className="w-2 h-2 bg-brand-green-600 rounded-full mr-3"></span>
             <span>{t('features.0')}</span>
           </li>
           <li className="flex items-center">
-            <span className="w-2 h-2 bg-[#00FF88] rounded-full mr-3"></span>
+            <span className="w-2 h-2 bg-brand-green-600 rounded-full mr-3"></span>
             <span>{t('features.1', { totalQuestions })}</span>
           </li>
           <li className="flex items-center">
-            <span className="w-2 h-2 bg-[#00FF88] rounded-full mr-3"></span>
+            <span className="w-2 h-2 bg-brand-green-600 rounded-full mr-3"></span>
             <span>{t('features.2')}</span>
           </li>
           <li className="flex items-center">
-            <span className="w-2 h-2 bg-[#00FF88] rounded-full mr-3"></span>
+            <span className="w-2 h-2 bg-brand-green-600 rounded-full mr-3"></span>
             <span>{t('features.3')}</span>
           </li>
         </ul>
@@ -46,7 +46,7 @@ export default function QuizIntro({ totalQuestions, onStart }: QuizIntroProps) {
       <div className="flex gap-4">
         <Button
           onClick={onStart}
-          className="flex-1 bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
+          className="flex-1 bg-brand-green-600 text-black hover:bg-brand-green-600/90"
         >
           {t('startButton')}
         </Button>

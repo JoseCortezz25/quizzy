@@ -11,21 +11,21 @@
       "question-one": "Elige el proveedor",
       "description-one": "Selecciona el proveedor que deseas usar para generar cuestionarios.",
       "question-two": "Clave API",
-      "description-two": "Ingresa tu clave API para poder usar los servicios del modelo que seleccionaste.",
+      "description-two": "Ingresa tu clave API para poder utilizar los servicios del modelo seleccionado.",
       "cta": "Guardar configuración",
       "created": "Creado por"
     }
   },
   "HomePage": {
     "modal": {
-      "title": "¡Bienvenido a AI Quiz Generator!",
-      "freeUseInfo": "Puedes usar la aplicación gratis para generar hasta 5 cuestionarios.",
-      "apiKeyRequirement": "Después de alcanzar este límite, necesitarás configurar tu propia clave API de Google o OpenAI para continuar usando la aplicación.",
-      "apiKeySetupInfo": "Puedes configurar tu clave API en cualquier momento haciendo clic en el icono de configuración ⚙️ en la barra superior."
+      "title": "¡Bienvenido al Generador de Cuestionarios con IA!",
+      "freeUseInfo": "Puedes usar la aplicación de forma gratuita para generar hasta 5 cuestionarios.",
+      "apiKeyRequirement": "Después de alcanzar este límite, necesitarás configurar tu propia clave API de Google o OpenAI para seguir usando la aplicación.",
+      "apiKeySetupInfo": "Puedes configurar tu clave API en cualquier momento haciendo clic en el ícono de configuración ⚙️ en la barra superior."
     },
     "mainContent": {
       "headline": "Genera cuestionarios inteligentes con IA en segundos",
-      "description": "Sube tu PDF o imagen y deja que la IA cree un cuestionario personalizado para ti. Perfecto para todos los estudiantes que quieren estudiar de manera más eficiente.",
+      "description": "Sube tu PDF o imagen y deja que la IA cree un cuestionario personalizado para ti. Perfecto para todos los estudiantes que desean estudiar de manera más eficiente.",
       "features": {
         "aiQuestions": "Preguntas generadas por IA",
         "tailoredContent": "Adaptado a tu contenido",
@@ -35,13 +35,13 @@
       "file": {
         "headline": "Sube tu",
         "description": {
-          "image": "Arrastra y suelta tu imagen aquí, o haz clic para seleccionar.",
-          "pdf": "Arrastra y suelta tu archivo PDF aquí, o haz clic para seleccionar."
+          "image": "Arrastra y suelta tu imagen aquí, o haz clic para seleccionarla.",
+          "pdf": "Arrastra y suelta tu archivo PDF aquí, o haz clic para seleccionarlo."
         },
         "select": "Haz clic para seleccionar un",
         "image": "imagen",
         "pdf": "PDF",
-        "title": "Archivo subido exitosamente",
+        "title": "Archivo subido con éxito",
         "cta": "Generar cuestionario",
         "submiting": "Subiendo...",
         "submit": "Subir"
@@ -51,14 +51,14 @@
   "QuizConfig": {
     "title": "Configuración del Cuestionario",
     "description": "Personaliza tu cuestionario según tus necesidades",
-    "topicsQuestion": "¿Sobre qué temas quieres que se generen las preguntas?",
-    "topicsPlaceholder": "Escribe los temas sobre los que quieres que se generen las preguntas basadas en el contenido proporcionado",
+    "topicsQuestion": "¿Sobre qué temas deseas que se generen las preguntas?",
+    "topicsPlaceholder": "Escribe los temas sobre los cuales deseas que se generen las preguntas basadas en el contenido proporcionado",
     "questionCount": "Número de preguntas",
     "questionType": "Tipo de pregunta",
     "quizFocus": "Enfoque del cuestionario",
     "generatingQuestions": "Generando preguntas...",
-    "generateButton": "Generar Cuestionario",
-    "errorGeneratingQuiz": "Error al generar el cuestionario",
+    "generateButton": "Generar cuestionario",
+    "errorGeneratingQuiz": "Ocurrió un error al generar el cuestionario. Por favor, inténtalo de nuevo.",
     "aiFeatures": {
       "title": "Cuestionario Personalizado con IA",
       "characteristics": "Características de la IA:",
@@ -77,8 +77,8 @@
     },
     "options": {
       "selectQuestionType": "Seleccionar tipo de pregunta",
-      "questionTypeOption": "Opción múltiple con una respuesta",
-      "multipleChoice": "Opción múltiple con una respuesta",
+      "questionTypeOption": "Opción múltiple con una sola respuesta",
+      "multipleChoice": "Opción múltiple con una sola respuesta",
       "trueOrFalse": "Verdadero o Falso",
       "selectFocus": "Seleccionar enfoque",
       "general": "General",
@@ -101,6 +101,17 @@
     }
   },
   "QuizIntro": {
+    "title": "Cuestionario de Conocimientos",
+    "description": "Prepárate, en este cuestionario validarás tus conocimientos",
+    "features": [
+      "Puedes realizar el cuestionario tantas veces como desees.",
+      "El cuestionario consta de 3 preguntas.",
+      "No hay límite de tiempo para completarlo, sin estrés.",
+      "Al final, sabrás qué conocimientos necesitas reforzar para dominarlo."
+    ],
+    "startButton": "Iniciar cuestionario"
+  },
+  "QuizIntro": {
     "title": "Cuestionario de Conocimiento",
     "description": "Prepárate, en este cuestionario validarás tus conocimientos",
     "features": [
@@ -113,7 +124,7 @@
   },
   "QuizResults": {
     "title": "Resultados",
-    "description": "Aquí puedes ver tus respuestas y resultados del cuestionario.",
+    "description": "Aquí puedes ver tus respuestas y los resultados del cuestionario.",
     "score": {
       "correct": "Respuestas correctas",
       "percentage": "Porcentaje de respuestas correctas",
@@ -122,8 +133,8 @@
     },
     "questions": {
       "use": "¿Cuál es uno de los principales usos del presente simple?",
-      "example": "¿Qué oración es un ejemplo del presente simple?",
-      "truth": "¿Qué oración usa el presente simple para establecer una verdad general?"
+      "example": "¿Cuál de estas oraciones es un ejemplo del presente simple?",
+      "truth": "¿Cuál de estas oraciones usa el presente simple para expresar una verdad general?"
     },
     "answers": {
       "habits": "Para describir hábitos y rutinas",

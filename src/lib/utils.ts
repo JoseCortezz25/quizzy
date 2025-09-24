@@ -1,6 +1,9 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import { QuestionType } from './types';
+import { Models, Options, QuestionType } from './types';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { ollama } from 'ollama-ai-provider';
+import { createOpenAI } from '@ai-sdk/openai';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -65,4 +68,25 @@ export const compressImage = async (file: File): Promise<Blob> => {
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+};
+
+export const getModel = (config: Options) => {
+  if (
+    config.model === Models.Gemini15ProLatest || config.model === Models.GeminiFlash15
+    || config.model === Models.Gemini20Flash || config.model === Models.Gemini25ProExp
+  ) {
+    const apiKey = config.isFree ? process.env.GOOGLE_GEMINI_API || "" : config.apiKey;
+    const google = createGoogleGenerativeAI({ apiKey });
+    const model = google(config.model);
+    return model;
+  }
+
+  if (config.model === Models.DeepSeekR1) {
+    const model = ollama('deepseek-r1');
+    return model;
+  }
+
+  const openai = createOpenAI({ apiKey: config.apiKey });
+  const model = openai(`${config.model}`);
+  return model;
 };

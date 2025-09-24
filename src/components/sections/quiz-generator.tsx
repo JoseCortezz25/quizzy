@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { CheckCircle, Sparkles, Target, Zap } from 'lucide-react';
 import { GenerateQuiz, Languages, Models, Options, QuestionType } from '@/lib/types';
 import { generateQuiz, generateQuizBasedImage } from '@/actions/generate-quiz';
-import { FileType, usePDF } from '@/store/store';
+import { FileType, usePDF } from '@/stores/store';
 import { Textarea } from '../ui/textarea';
 import { toast } from 'sonner';
 import { dictionaryQuestionType, cn, compressImage } from '@/lib/utils';
@@ -72,14 +72,20 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
       formData.append('questionType', questionType);
 
       const quizCount = typeof window !== 'undefined' ? parseInt(localStorage.getItem('quizCount') || '0') : 0;
-      const isFree = quizCount < 5 || !!localStorage.getItem('apiKey');
+      const hasApiKey = !!localStorage.getItem('apiKey');
+      const currentModel = localStorage.getItem('model') as Models;
+      const isFree = currentModel === Models.DeepSeekR1 ? hasApiKey : (quizCount < 5 || hasApiKey);
 
       const config: Options = {
         apiKey: window.localStorage.getItem('apiKey') || '',
-        model: window.localStorage.getItem('model') as Models,
+        model: currentModel,
         isFree,
         language: locale === 'en' ? Languages.English : Languages.Spanish
       };
+
+
+      console.log("Config", config);
+
 
       setIsGenerating(true);
 
@@ -113,7 +119,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
   };
 
   return (
-    <div className="min-h-screen bg-[#0A0E12] text-white">
+    <div className="min-h-screen bg-brand-dark-800 text-white">
       <div className="max-w-7xl mx-auto sm:px-4 py-8">
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -137,7 +143,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                   if (pdfContentError) setPdfContentError("");
                 }}
                 className={cn(
-                  "bg-[#272D36] text-white border-0 min-h-[100px] max-h-[210px] placeholder:text-white/60",
+                  "bg-brand-dark-600 text-white border-0 min-h-[100px] max-h-[210px] placeholder:text-white/60",
                   pdfContentError && "border-2 border-red-500"
                 )}
               />
@@ -145,7 +151,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                 <p className="text-sm text-red-500">{pdfContentError}</p>
               )}
             </div>
-            <div className="bg-[#1A1F25] rounded-lg p-6 space-y-6">
+            <div className="bg-brand-green-950 rounded-lg p-6 space-y-6">
               <div className="space-y-4">
                 <Label>{t('questionCount')}</Label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -155,8 +161,8 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                       className={cn(
                         "cursor-pointer rounded-lg p-4 text-center transition-colors font-bold",
                         numQuestions === num
-                          ? "bg-[#00FF88] text-black"
-                          : "bg-[#272D36] hover:bg-[#272D36]/80"
+                          ? "bg-brand-green-600 text-black"
+                          : "bg-brand-dark-600 hover:bg-brand-dark-600/80"
                       )}
                       onClick={() => setNumQuestions(num)}
                     >
@@ -172,7 +178,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                   value={questionType}
                   onValueChange={(value: string) => setQuestionType(value as QuestionType)}
                 >
-                  <SelectTrigger id="question-type" className="bg-[#272D36] border-0">
+                  <SelectTrigger id="question-type" className="bg-brand-dark-600 border-0">
                     <SelectValue placeholder={t('options.selectQuestionType')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -195,7 +201,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                   value={focus}
                   onValueChange={(value: string) => setFocus(value as "general" | "tecnictal" | "theoretical")
                   }>
-                  <SelectTrigger id="focus" className="bg-[#272D36] border-0">
+                  <SelectTrigger id="focus" className="bg-brand-dark-600 border-0">
                     <SelectValue placeholder={t('options.selectFocus')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -209,7 +215,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
               <div className="space-y-4">
                 <Label htmlFor="difficulty">{t('options.selectDifficulty')}</Label>
                 <Select value={difficulty} onValueChange={setDifficulty}>
-                  <SelectTrigger id="difficulty" className="bg-[#272D36] border-0">
+                  <SelectTrigger id="difficulty" className="bg-brand-dark-600 border-0">
                     <SelectValue placeholder={t('options.selectDifficulty')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -225,7 +231,8 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
             <Button
               onClick={handleGenerate}
               disabled={isGenerating}
-              className="w-full bg-[#00FF88] text-black hover:bg-[#00FF88]/90"
+              className="w-full"
+              variant="primary"
             >
               {isGenerating ? t('generatingQuestions') : t('generateButton')}
             </Button>
@@ -233,9 +240,9 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
 
           {/* Right Column - Preview and Features */}
           <div className="lg:pl-8">
-            <div className="bg-[#1A1F25] rounded-lg p-8">
+            <div className="bg-brand-green-950 rounded-lg p-8">
               <div className="flex items-center gap-3 mb-6">
-                <Sparkles className="w-6 h-6 text-[#00FF88]" />
+                <Sparkles className="w-6 h-6 text-brand-green-600" />
                 <h2 className="text-xl font-bold">{t('aiFeatures.title')}</h2>
               </div>
 
@@ -243,21 +250,21 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
                 <h3 className="text-lg font-semibold">{t('aiFeatures.characteristics')}</h3>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-[#00FF88] mt-1" />
+                    <CheckCircle className="w-5 h-5 text-brand-green-600 mt-1" />
                     <div>
                       <p className="font-medium">{t('aiFeatures.intelligentQuestions.title')}</p>
                       <p className="text-sm text-gray-400">{t('aiFeatures.intelligentQuestions.description')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Target className="w-5 h-5 text-[#00FF88] mt-1" />
+                    <Target className="w-5 h-5 text-brand-green-600 mt-1" />
                     <div>
                       <p className="font-medium">{t('aiFeatures.adaptability.title')}</p>
                       <p className="text-sm text-gray-400">{t('aiFeatures.adaptability.description')}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Zap className="w-5 h-5 text-[#00FF88] mt-1" />
+                    <Zap className="w-5 h-5 text-brand-green-600 mt-1" />
                     <div>
                       <p className="font-medium">{t('aiFeatures.personalizedApproach.title')}</p>
                       <p className="text-sm text-gray-400">{t('aiFeatures.personalizedApproach.description')}</p>
@@ -269,7 +276,7 @@ export default function QuizGenerator({ onGenerate }: QuizGeneratorProps) {
               {/* Preview */}
               <div className="mt-8">
                 <h3 className="text-lg font-semibold mb-4">{t('preview.title')}</h3>
-                <div className="bg-[#272D36] rounded-lg p-4 space-y-4">
+                <div className="bg-brand-dark-600 rounded-lg p-4 space-y-4">
                   <p className="font-medium">{t('preview.currentConfig')}</p>
                   <ul className="list-disc list-inside text-sm text-gray-400">
                     <li>{t('preview.questionCount')}: {numQuestions}</li>

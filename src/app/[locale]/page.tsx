@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { ThemeProvider } from "next-themes";
 import PDFUploader from '@/components/sections/pdf-uploader';
 import QuizGenerator from '@/components/sections/quiz-generator';
 import QuizQuestion from '@/components/sections/quiz-question';
@@ -86,53 +85,52 @@ export default function QuizApp() {
   };
 
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark">
-      <div className="min-h-screen w-full bg-[#0A0E12] text-white">
-        <Navbar quizCount={quizCount} />
-        <WelcomeModal
-          open={showWelcomeModal}
-          onOpenChange={setShowWelcomeModal}
-        />
 
-        <ErrorModal
-          open={errorModalOpen}
-          onOpenChange={setErrorModalOpen}
-          setStep={setStep}
-        />
+    <div className="min-h-screen w-full  text-white">
+      <Navbar quizCount={quizCount} />
+      <WelcomeModal
+        open={showWelcomeModal}
+        onOpenChange={setShowWelcomeModal}
+      />
 
-        <div className="container mx-auto">
-          {step === 'upload' && <PDFUploader onUpload={handlePDFUpload} />}
-          {step === 'generate' && <QuizGenerator onGenerate={handleQuizGenerated} />}
-          {step === 'intro' && (
-            <QuizIntro
-              totalQuestions={questions.length}
-              onStart={handleStartQuiz}
-            />
-          )}
-          {step === 'quiz' && (
-            <QuizQuestion
-              title={title}
-              question={questions[currentQuestionIndex]}
-              questionNumber={currentQuestionIndex + 1}
-              totalQuestions={questions.length}
-              onAnswer={handleQuestionAnswer}
-              onNext={handleNextQuestion}
-              currentQuestionIndex={currentQuestionIndex}
-              setCurrentQuestionIndex={setCurrentQuestionIndex}
-              setStep={setStep}
-              onSkip={handleSkipQuestion}
-            />
-          )}
-          {step === 'results' && (
-            <QuizResults
-              title={title}
-              questions={questions}
-              userAnswers={userAnswers}
-              setStep={setStep}
-            />
-          )}
-        </div>
+      <ErrorModal
+        open={errorModalOpen}
+        onOpenChange={setErrorModalOpen}
+        setStep={setStep}
+      />
+
+      <div className="container mx-auto">
+        {step === 'upload' && <PDFUploader onUpload={handlePDFUpload} />}
+        {step === 'generate' && <QuizGenerator onGenerate={handleQuizGenerated} />}
+        {step === 'intro' && (
+          <QuizIntro
+            totalQuestions={questions.length}
+            onStart={handleStartQuiz}
+          />
+        )}
+        {step === 'quiz' && (
+          <QuizQuestion
+            title={title}
+            question={questions[currentQuestionIndex]}
+            questionNumber={currentQuestionIndex + 1}
+            totalQuestions={questions.length}
+            onAnswer={handleQuestionAnswer}
+            onNext={handleNextQuestion}
+            currentQuestionIndex={currentQuestionIndex}
+            setCurrentQuestionIndex={setCurrentQuestionIndex}
+            setStep={setStep}
+            onSkip={handleSkipQuestion}
+          />
+        )}
+        {step === 'results' && (
+          <QuizResults
+            title={title}
+            questions={questions}
+            userAnswers={userAnswers}
+            setStep={setStep}
+          />
+        )}
       </div>
-    </ThemeProvider>
+    </div>
   );
 }
