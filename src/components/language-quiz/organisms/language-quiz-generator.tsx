@@ -127,7 +127,7 @@ export function LanguageQuizGenerator({ onQuizGenerated }: LanguageQuizGenerator
             size="icon"
             className="h-9 w-9 min-w-9 min-h-9"
             onClick={handleSubmit}
-            disabled={!input.trim()}
+            disabled={!input.trim() || isLoading}
           >
             {isLoading ? (
               <Square className="size-7 fill-current" />
